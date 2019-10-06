@@ -1,0 +1,9 @@
+set(THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/thirdparty)
+
+set(THIRD_PARTY_SOURCES
+${THIRD_PARTY_DIR}/catch2/catch.hpp
+)
+
+set(THIRD_PARTY_INCLUDES
+${THIRD_PARTY_DIR}/catch2
+)
