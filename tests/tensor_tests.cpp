@@ -7,7 +7,7 @@ TEST_CASE( "Tensor processing",  "[tensors]")
 {
 	SECTION( "Tensor is a point" ) 
 	{
-		f_tensor t( 3.f, 4.f, -2.f, 1.f );
+		f_point t( 3.f, 4.f, -2.f );
 
 		REQUIRE( approx(t.x, 3.f) );
 		REQUIRE( approx(t.y, 4.f) );
@@ -18,7 +18,7 @@ TEST_CASE( "Tensor processing",  "[tensors]")
 
 	SECTION( "Tensor is a vector" ) 
 	{
-		f_tensor t( 3.f, 4.f, -2.f, 0.f );
+		f_vector t( 3.f, 4.f, -2.f );
 
 		REQUIRE( approx(t.x, 3.f) );
 		REQUIRE( approx(t.y, 4.f) );
@@ -29,61 +29,61 @@ TEST_CASE( "Tensor processing",  "[tensors]")
 
 	SECTION( "Factory creating a point" ) 
 	{
-		auto t = f_tensor::point(4.f, 3.f, 2.f);
+		auto t = f_point( 4.f, 3.f, 2.f );
 
-		REQUIRE( t == f_tensor(4.f, 3.f, 2.f, 1.f));
+		REQUIRE( t == f_tensor( 4.f, 3.f, 2.f, 1.f ) );
 	}
 
 	SECTION( "Factory creating a vector" ) 
 	{
-		auto t = f_tensor::vector(5.f, 2.f, 1.f);
+		auto t = f_vector( 5.f, 2.f, 1.f );
 
-		REQUIRE( t == f_tensor(5.f, 2.f, 1.f, 0));
+		REQUIRE( t == f_tensor( 5.f, 2.f, 1.f, 0 ) );
 	}
 
 	SECTION( "Adding two tensors" )
 	{
-		auto vec = f_tensor::vector( 3.f, 1.4f, 9.f );
-		auto pt = f_tensor::point( 1.f, 3.f, 1.f );
+		auto vec = f_vector( 3.f, 1.4f, 9.f );
+		auto pt = f_point( 1.f, 3.f, 1.f );
 
 		REQUIRE( vec + pt == f_tensor( 4.f, 4.4f, 10.f, 1.f ) );
 	}
 
 	SECTION( "Subtracting two points" )
 	{
-		auto pt1 = f_tensor::point( 3.f, 2.f, 5.f );
-		auto pt2 = f_tensor::point( 1.f, 1.f, 1.f );
+		auto pt1 = f_point( 3.f, 2.f, 5.f );
+		auto pt2 = f_point( 1.f, 1.f, 1.f );
 
 		REQUIRE( pt1 - pt2 == f_tensor( 2.f, 1.f, 4.f, 0.f ) );
 	}
 
 	SECTION( "Subtracting a vector from a point" )
 	{
-		auto pt = f_tensor::point( 1.f, 2.f, 14.f );
-		auto vec = f_tensor::vector( 1.f, 3.f, 5.f );
+		auto pt = f_point( 1.f, 2.f, 14.f );
+		auto vec = f_vector( 1.f, 3.f, 5.f );
 
 		REQUIRE( pt - vec == f_tensor( 0.f, -1.f, 9.f, 1.f ) );
 	}
 
 	SECTION( "Subtracting a vector from a vector" )
 	{
-		auto vec1 = f_tensor::vector( 3.f, 11.f, 9.f );
-		auto vec2 = f_tensor::vector( 5.f, 2.f, 92.f );
+		auto vec1 = f_vector( 3.f, 11.f, 9.f );
+		auto vec2 = f_vector( 5.f, 2.f, 92.f );
 
 		REQUIRE( vec1 - vec2 == f_tensor( -2.f, 9.f, -83.f, 0.f ) );
 	}
 
 	SECTION( "Subtracting a vector from the zero vector" )
 	{
-		auto zero = f_tensor::vector( 0.f, 0.f, 0.f );
-		auto vec = f_tensor::vector( 10.f, 3.f, 1.f );
+		auto zero = f_vector( 0.f, 0.f, 0.f );
+		auto vec = f_vector( 10.f, 3.f, 1.f );
 
 		REQUIRE( zero - vec == f_tensor( -10.f, -3.f, -1.f, 0.f ) );
 	}
 
 	SECTION( "Negating a vector" )
 	{
-		auto vec = f_tensor::vector( 2.f, 4.f, 0.5f );
+		auto vec = f_vector( 2.f, 4.f, 0.5f );
 
 		REQUIRE( -vec == f_tensor( -2.f, -4.f, -0.5f, 0.f ) );
 	}
@@ -111,33 +111,78 @@ TEST_CASE( "Tensor processing",  "[tensors]")
 
 	SECTION( "Computing the length of vector (1, 0, 0)" )
 	{
-		auto vec = f_tensor::vector( 1, 0, 0 );
+		auto vec = f_vector( 1, 0, 0 );
 
 		REQUIRE( vec.length() == 1.f );
 	}
 
 	SECTION( "Computing the length of vector (0, 1, 0)" )
 	{
-		auto vec = f_tensor::vector( 0, 1, 0 );
+		auto vec = f_vector( 0, 1, 0 );
 
 		REQUIRE( vec.length() == 1.f );
 	}
 
 	SECTION( "Computing the length of vector (0, 0, 1)" )
 	{
-		auto vec = f_tensor::vector( 0, 0, 1 );
+		auto vec = f_vector( 0, 0, 1 );
 
 		REQUIRE( vec.length() == 1.f );
 	}
 
 	SECTION( "Computing the length of vector (1, 2, 3) and (-1, -2, -3)" )
 	{
-		auto vec = f_tensor::vector( 1, 2, 3 );
+		auto vec = f_vector( 1, 2, 3 );
 
 		REQUIRE( vec.length() == 3.7416573867f );
 
 		auto nvec = -vec;
 
 		REQUIRE( nvec.length() == 3.7416573867f );
+	}
+
+	SECTION( "Normalizing vector (4, 0, 0)" )
+	{
+		auto vec = f_vector( 4, 0, 0 );
+		auto norm = vec.normalized();
+
+		REQUIRE( norm == f_vector( 1, 0, 0 ) );
+		REQUIRE( approx(norm.length(), 1) );
+	}
+
+	SECTION( "Normalizing vector (1, 2, 3)" )
+	{
+		auto vec = f_vector( 1, 2, 3 );
+		auto norm = vec.normalized();
+
+		REQUIRE( norm == f_vector( 0.26726f, 0.53452f, 0.80178f ) );
+		REQUIRE( approx(norm.length(), 1) );
+	}
+
+	SECTION( "Computing the dot product of two tensors" )
+	{
+		auto vec1 = f_vector( 1, 2, 3 );
+		auto vec2 = f_vector( 2, 3, 4 );
+
+		REQUIRE( approx( vec1.dot( vec2 ), 20 ) );
+	}
+
+	SECTION( "Computing the cross product of two tensors" )
+	{
+		auto vec1 = f_vector( 1, 2, 3 );
+		auto vec2 = f_vector( 2, 3, 4 );
+
+		REQUIRE( vec1.cross( vec2 ) == f_vector( -1, 2, -1 ) );
+		REQUIRE( vec2.cross( vec1 ) == f_vector( 1, -2, 1 ) );
+	}
+
+	SECTION( "Colors are (r, g, b) tensors" )
+	{
+		auto color = f_color( 0.98f, 0.23f, 1.2f );
+
+		REQUIRE( color.r == 0.98f );
+		REQUIRE( color.g == 0.23f );
+		REQUIRE( color.b == 1.2f );
+		REQUIRE( color.a == 1.f );
 	}
 }

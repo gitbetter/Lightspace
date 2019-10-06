@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 14)
 
-project(Lightspace VERSION 1.0.0 LANGUAGES CXX)
+set(PROJECT_NAME Lightspace)
+
+project(${PROJECT_NAME} VERSION 1.0.0 LANGUAGES CXX)
 
 option(DEVELOPMENT "Generate a development build" OFF)
 option(DOUBLE_PRECISION "Double precision floating point numbers" OFF)
-
-set(PROJECT_NAME Lightspace)
 
 include(${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
 include(${CMAKE_SOURCE_DIR}/source/CMakeLists.txt)
 include(${CMAKE_SOURCE_DIR}/thirdparty/CMakeLists.txt)
 
-set(SOURCES ${TEST_SOURCES} ${THIRD_PARTY_SOURCES} ${CORE_SOURCES})
+set(SOURCES ${CORE_SOURCES} ${THIRD_PARTY_SOURCES})
 
 set(INCLUDES ${CORE_INCLUDES} ${THIRD_PARTY_INCLUDES})
 
@@ -27,9 +27,17 @@ if(DOUBLE_PRECISION)
 	add_compile_definitions(DOUBLE_PRECISION)
 endif(DOUBLE_PRECISION)
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-
+# Set up Lightspace library 
+add_library(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES})
+
+# Set up Lightspace demo executable
+add_executable(${PROJECT_NAME}_Demo ${CORE_DIR}/main.cpp)
+target_link_libraries(${PROJECT_NAME}_Demo ${PROJECT_NAME})
+
+# Set up Lightspace tests executable
+add_executable(Tests ${TEST_SOURCES})
+target_link_libraries(Tests ${PROJECT_NAME})
 
 foreach(FILE ${SOURCES}) 
 	get_filename_component(PARENT_DIR "${FILE}" DIRECTORY)
