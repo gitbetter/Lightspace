@@ -138,6 +138,11 @@ namespace ls
 			return tensor<T>( x * s, y * s, z * s, w * s );
 		}
 
+		const tensor<T> hadamard_product( const tensor<T>& rhs ) const noexcept
+		{
+			return tensor<T>( x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w );
+		}
+
 		const tensor<T> divide( const T& s ) const
 		{
 			// TODO: Handle division by zero
@@ -217,6 +222,12 @@ namespace ls
 
 	};
 
+	template<typename T>
+	inline point<T> operator*( T lhs, const point<T>& rhs )
+	{
+		return rhs * lhs;
+	}
+
 	using f_point = point<fpnum>;
 	using i_point = point<int>;
 	using c_point = point<char>;
@@ -272,12 +283,23 @@ namespace ls
 			return color<T>( multiply( s ) );
 		}
 
+		const color<T> operator*( const color<T>& rhs ) const noexcept
+		{
+			return color<T>( hadamard_product( rhs ) );
+		}
+
 		const color<T> operator/( const T& s ) const
 		{
 			return color<T>( divide( s ) );
 		}
 
 	};
+
+	template<typename T>
+	inline color<T> operator*( T lhs, const color<T>& rhs )
+	{
+		return rhs * lhs;
+	}
 
 	using f_color = color<fpnum>;
 	using i_color = color<int>;
@@ -353,6 +375,12 @@ namespace ls
 		}
 
 	};
+
+	template<typename T>
+	inline vector<T> operator*( T lhs, const vector<T>& rhs )
+	{
+		return rhs * lhs;
+	}
 
 	using f_vector = vector<fpnum>;
 	using i_vector = vector<int>;
