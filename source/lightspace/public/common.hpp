@@ -15,4 +15,10 @@ namespace ls {
 	inline bool approx( const fpnum& lhs, const fpnum& rhs ) noexcept {
 		return fabs( lhs - rhs ) <= epsilon;
 	}
+
+	template<typename T>
+	inline T clamp( T x, T a, T b ) noexcept
+	{
+		return x > b ? b : ( x < a ? a : x );
+	}
 }
