@@ -12,17 +12,17 @@ namespace ls {
 
 		canvas( uint16_t width, uint16_t height );
 
-		const uint16_t width() const noexcept
+		inline const uint16_t width() const noexcept
 		{
 			return _width;
 		}
 
-		const uint16_t height() const noexcept
+		inline const uint16_t height() const noexcept
 		{
 			return _height;
 		}
 
-		const pixel_space& pixels() const noexcept
+		inline const pixel_space& pixels() const noexcept
 		{
 			return _pixels;
 		}
@@ -33,6 +33,8 @@ namespace ls {
 
 		const std::string to_ppm() const;
 
+		void write_to( const std::string& file ) const;
+
 	private:
 
 		uint16_t _width{ 0 };
@@ -40,6 +42,11 @@ namespace ls {
 		pixel_space _pixels;
 
 	private:
+
+		inline bool within_bounds( const uint16_t& x, const uint16_t& y ) const noexcept
+		{
+			return x >= 0 && x < _width && y >= 0 && y < _height;
+		}
 
 		void append_ppm_header( std::stringstream& os ) const;
 		

@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <fstream>
 #include <sstream>
 #include "canvas.hpp"
 
@@ -11,27 +12,22 @@ namespace ls {
 
 	void canvas::draw_pixel( uint16_t x, uint16_t y, const f_color& color )
 	{
-		try
+		if ( !within_bounds( x, y ) )
 		{
-			_pixels[x][y] = color;
+			std::cout << ". Could not draw pixel at (" << x << ", " << y << ")." << std::endl;
+			return;
 		}
-		catch ( const std::out_of_range& e )
-		{
-			std::cout << e.what() << ". Could not draw pixel at (" << x << ", " << y << ")." << std::endl;
-		}
+		_pixels[y][x] = color;
 	}
 
 	const f_color canvas::pixel_at( uint16_t x, uint16_t y ) const
 	{
-		try
+		if ( !within_bounds( x, y ) )
 		{
-			return _pixels[x][y];
-		}
-		catch ( const std::out_of_range& e )
-		{
-			std::cout << e.what() << ". No such pixel at (" << x << ", " << y << ")." << std::endl;
+			std::cout << ". No such pixel at (" << x << ", " << y << ")." << std::endl;
 			return f_color( 0, 0, 0 );
 		}
+		return _pixels[y][x];
 	}
 
 	const std::string canvas::to_ppm() const
@@ -40,6 +36,22 @@ namespace ls {
 		append_ppm_header( stream );
 		append_ppm_pixel_data( stream );
 		return stream.str();
+	}
+
+	void canvas::write_to( const std::string& file ) const
+	{
+		std::ofstream out;
+		out.exceptions( std::ios::badbit | std::ios::failbit );
+		try
+		{
+			out.open( file, std::fstream::out | std::fstream::trunc );
+			out << to_ppm();
+			out.close();
+		}
+		catch ( const std::exception& e )
+		{
+			std::cout << "Could not open file at " << file << " for writing: " << e.what() << std::endl;
+		}
 	}
 
 	void canvas::append_ppm_header( std::stringstream& os ) const
