@@ -6,6 +6,8 @@ ${CORE_DIR}/public/tensor.hpp
 ${CORE_DIR}/private/tensor.cpp
 ${CORE_DIR}/public/canvas.hpp
 ${CORE_DIR}/private/canvas.cpp
+${CORE_DIR}/public/matrix.hpp
+${CORE_DIR}/private/matrix.cpp
 )
 
 set(CORE_INCLUDES

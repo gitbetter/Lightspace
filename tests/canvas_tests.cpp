@@ -48,8 +48,8 @@ TEST_CASE( "Canvas processing",  "[canvas]")
 		auto color3 = f_color( -0.5f, 0, 1 );
 
 		canv.draw_pixel( 0, 0, color1 );
-		canv.draw_pixel( 1, 2, color2 );
-		canv.draw_pixel( 2, 4, color3 );
+		canv.draw_pixel( 2, 1, color2 );
+		canv.draw_pixel( 4, 2, color3 );
 
 		auto ppm = canv.to_ppm();
 		std::string expected_ppm{
@@ -69,9 +69,9 @@ TEST_CASE( "Canvas processing",  "[canvas]")
 		auto canv = canvas( 10, 2 );
 		auto pixel_color = f_color( 1.5f, 0.8f, 0.6f );
 	
-		for ( auto i = 0; i < canv.height(); i++ )
+		for ( auto i = 0; i < canv.width(); i++ )
 		{
-			for ( auto j = 0; j < canv.width(); j++ )
+			for ( auto j = 0; j < canv.height(); j++ )
 			{
 				canv.draw_pixel( i, j, pixel_color );
 			}
