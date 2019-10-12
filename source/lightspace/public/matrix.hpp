@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.hpp"
+#include "tensor.hpp"
 #include <array>
 #include <type_traits>
 
@@ -15,7 +16,7 @@ namespace ls {
 
 		matrix()
 		{
-			initialize_with_identity();
+			initialize_with_zeroes();
 		}
 
 		matrix( const std::initializer_list<T>& elements )
@@ -40,12 +41,107 @@ namespace ls {
 			}
 			return _data[r][c];
 		}
+
+		bool operator==( const matrix<T, Rows, Cols>& rhs ) const noexcept
+		{
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					if ( _data[i][j] != rhs._data[i][j] )
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		bool operator!=( const matrix<T, Rows, Cols>& rhs ) const noexcept
+		{
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					if ( _data[i][j] != rhs._data[i][j] )
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		const matrix<T, Rows, Cols> operator*( const matrix<T, Rows, Cols>& rhs ) const
+		{
+			matrix<T, Rows, Cols> result;
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					for ( auto k = 0; k < Rows; k++ )
+					{
+						result._data[i][j] += _data[i][k] * rhs._data[k][j];
+					}
+				}
+			}
+			return result;
+		}
+
+		const tensor<T> operator*( const tensor<T>& rhs ) const
+		{
+			tensor<T> result;
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					result( i ) += _data[i][j] * rhs( j );
+				}
+			}
+			return result;
+		}
+
+		const matrix<T, Rows, Cols> transpose() const
+		{
+			matrix<T, Rows, Cols> result;
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					result._data[j][i] = _data[i][j];
+				}
+			}
+			return result;
+		}
+
+		static const matrix<T, Rows, Cols> identity()
+		{
+			static matrix<T, Rows, Cols> result;
+			if ( result._data[0][0] == 0 )
+			{
+				result.initialize_with_identity();
+			}
+			return result;
+		}
 	
 	private:
 
 		std::array<std::array<T, Cols>, Rows> _data;
 
 	private:
+
+		void initialize_with_zeroes()
+		{
+			{
+				for ( auto i = 0; i < Rows; i++ )
+				{
+					for ( auto j = 0; j < Cols; j++ )
+					{
+						_data[i][j] = 0;
+					}
+				}
+			}
+		}
 
 		void initialize_with_identity()
 		{

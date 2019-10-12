@@ -12,8 +12,12 @@ namespace ls {
 	static constexpr float epsilon = std::numeric_limits<fpnum>::epsilon() * 100;
 	static constexpr float infinity = std::numeric_limits<fpnum>::infinity();
 
-	inline bool approx( const fpnum& lhs, const fpnum& rhs ) noexcept {
-		return fabs( lhs - rhs ) <= epsilon;
+	template<
+		typename T,
+		typename = std::enable_if_t<std::is_arithmetic<T>::value>
+	>
+	inline bool approx( const T& lhs, const T& rhs ) noexcept {
+		return fabs( static_cast<fpnum>( lhs ) -  static_cast<fpnum>( rhs ) ) <= epsilon;
 	}
 
 	template<typename T>

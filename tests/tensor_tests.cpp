@@ -153,7 +153,7 @@ TEST_CASE( "Vector processing", "[tensors][vectors]" )
 		auto norm = vec.normalized();
 
 		REQUIRE( norm == f_vector( 1, 0, 0 ) );
-		REQUIRE( approx( norm.length(), 1 ) );
+		REQUIRE( approx( norm.length(), 1.f ) );
 	}
 
 	SECTION( "Normalizing vector (1, 2, 3)" )
@@ -162,7 +162,7 @@ TEST_CASE( "Vector processing", "[tensors][vectors]" )
 		auto norm = vec.normalized();
 
 		REQUIRE( norm == f_vector( 0.26726f, 0.53452f, 0.80178f ) );
-		REQUIRE( approx( norm.length(), 1 ) );
+		REQUIRE( approx( norm.length(), 1.f ) );
 	}
 
 	SECTION( "Computing the dot product of two vectors" )
@@ -170,7 +170,7 @@ TEST_CASE( "Vector processing", "[tensors][vectors]" )
 		auto vec1 = f_vector( 1, 2, 3 );
 		auto vec2 = f_vector( 2, 3, 4 );
 
-		REQUIRE( approx( vec1.dot( vec2 ), 20 ) );
+		REQUIRE( approx( vec1.dot( vec2 ), 20.f ) );
 	}
 
 	SECTION( "Computing the cross product of two vectors" )

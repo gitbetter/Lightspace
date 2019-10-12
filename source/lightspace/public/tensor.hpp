@@ -49,6 +49,10 @@ namespace ls
 
 	public:
 
+		tensor() :
+			x( 0 ), y( 0 ), z( 0 ), w( 0 )
+		{ }
+
 		tensor( T x, T y, T z, T w ) : 
 			x( x ), y( y ), z( z ), w( w ) 
 		{ }
@@ -65,6 +69,30 @@ namespace ls
 		{
 			T lenInv = 1 / length();
 			return tensor<T>( x * lenInv, y * lenInv, z * lenInv, w * lenInv );
+		}
+
+		T operator()( uint8_t idx ) const
+		{
+			if ( idx < 0 || idx > 3 )
+			{
+				throw std::out_of_range( "Tensor index " + std::to_string( idx ) + " is out of range" );
+			}
+			if ( idx == 0 ) return x;
+			if ( idx == 1 ) return y;
+			if ( idx == 2 ) return z;
+			return w;
+		}
+
+		T& operator()( uint8_t idx )
+		{
+			if ( idx < 0 || idx > 3 )
+			{
+				throw std::out_of_range( "Tensor index " + std::to_string( idx ) + " is out of range" );
+			}
+			if ( idx == 0 ) return x;
+			if ( idx == 1 ) return y;
+			if ( idx == 2 ) return z;
+			return w;
 		}
 
 		bool operator==( const tensor<T>& rhs ) const noexcept
