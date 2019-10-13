@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include <fstream>
 #include <sstream>
 #include "canvas.hpp"

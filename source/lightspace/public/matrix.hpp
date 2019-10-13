@@ -114,6 +114,36 @@ namespace ls {
 			return result;
 		}
 
+		const T determinant() const
+		{
+			throw method_not_supported();
+		}
+
+		const T minor( uint8_t r, uint8_t c ) const
+		{
+			throw method_not_supported();
+		}
+
+		const T cofactor( uint8_t r, uint8_t c ) const
+		{
+			throw method_not_supported();
+		}
+
+		const matrix<T, Rows - 1, Cols - 1> submatrix( uint8_t row_to_remove, uint8_t col_to_remove ) const
+		{
+			matrix<T, Rows - 1, Cols - 1> result;
+			for ( auto i = 0; i < Rows - 1; i++ )
+			{
+				for ( auto j = 0; j < Cols - 1; j++ )
+				{
+					auto otherI = i < row_to_remove ? i : i + 1;
+					auto otherJ = j < col_to_remove ? j : j + 1;
+					result( i, j ) = _data[otherI][otherJ];
+				}
+			}
+			return result;
+		}
+
 		static const matrix<T, Rows, Cols> identity()
 		{
 			static matrix<T, Rows, Cols> result;
@@ -182,6 +212,58 @@ namespace ls {
 		}
 
 	};
+
+	template<>
+	inline const fpnum matrix<fpnum, 2, 2>::determinant() const
+	{
+		return _data[0][0] * _data[1][1] - _data[0][1] * _data[1][0];
+	}
+
+	template<>
+	inline const int matrix<int, 2, 2>::determinant() const
+	{
+		return _data[0][0] * _data[1][1] - _data[0][1] * _data[1][0];
+	}
+
+	template<>
+	inline const fpnum matrix<fpnum, 3, 3>::minor( uint8_t r, uint8_t c ) const
+	{
+		return submatrix( r, c ).determinant();
+	}
+
+	template<>
+	inline const int matrix<int, 3, 3>::minor( uint8_t r, uint8_t c ) const
+	{
+		return submatrix( r, c ).determinant();
+	}
+
+	template<>
+	inline const fpnum matrix<fpnum, 3, 3>::cofactor( uint8_t r, uint8_t c ) const
+	{
+		return ( r + c ) % 2 != 0 ? -minor( r, c ) : minor( r, c );
+	}
+
+	template<>
+	inline const int matrix<int, 3, 3>::cofactor( uint8_t r, uint8_t c ) const
+	{
+		return ( r + c ) % 2 != 0 ? -minor( r, c ) : minor( r, c );
+	}
+
+	template<typename T, std::size_t Rows, std::size_t Cols>
+	std::ostream& operator<<( std::ostream& out, const matrix<T, Rows, Cols>& m )
+	{
+		out << '[';
+		for ( auto i = 0; i < Rows; i++ )
+		{
+			for ( auto j = 0; j < Cols; j++ )
+			{
+				out << m( i, j ) << ( j == Cols - 1 ? "" : " " );
+			}
+			out << ( i == Rows - 1 ? "" : "\n " );
+		}
+		out << ']';
+		return out;
+	}
 
 	using f2_matrix = matrix<fpnum, 2, 2>;
 	using f3_matrix = matrix<fpnum, 3, 3>;

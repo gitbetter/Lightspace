@@ -164,4 +164,83 @@ TEST_CASE( "Matrix processing",  "[matrices]")
 	{
 		REQUIRE( i4_matrix::identity().transpose() == i4_matrix::identity() );
 	}
+
+	SECTION( "Calculating the determinant of a 2x2 matrix" )
+	{
+		auto m = i2_matrix{
+			1, 5,
+			-3, 2
+		};
+
+		REQUIRE( m.determinant() == 17 );
+	}
+
+	SECTION( "A submatrix of a 3x3 matrix is a 2x2 matrix" )
+	{
+		auto m = i3_matrix{
+			3, -1, 8,
+			2, 9, 2,
+			4, 0, -2
+		};
+		auto result = i2_matrix{
+			2, 9,
+			4, 0
+		};
+
+		REQUIRE( m.submatrix( 0, 2 ) == result );
+	}
+
+	SECTION( "A submatrix of a 4x4 matrix is a 3x3 matrix" )
+	{
+		auto m = i4_matrix{
+			2, 4, 8, 9,
+			1, 3, 5, 6,
+			3, 3, 9, 7,
+			-1, 0, 1, 2
+		};
+		auto result = i3_matrix{
+			2, 8, 9,
+			1, 5, 6,
+			3, 9, 7
+		};
+
+		REQUIRE( m.submatrix( 3, 1 ) == result );
+	}
+
+	SECTION( "Calculating a minor of a 3x3 matrix" )
+	{
+		auto m = i3_matrix{
+			3, 5, 0,
+			2, -1, -7,
+			6, -1, 5
+		};
+		auto sub = m.submatrix( 1, 0 );
+		auto detB = sub.determinant();
+
+		REQUIRE( m.minor( 1, 0 ) == detB );
+	}
+
+	SECTION( "Calculating a cofactor of a 3x3 matrix" )
+	{
+		auto m = i3_matrix{
+			3, 5, 0,
+			2, -1, -7,
+			6, -1, 5
+		};
+		auto minor = m.minor( 0, 0 );
+
+		REQUIRE( minor == -12 );
+
+		auto cofactor = m.cofactor( 0, 0 );
+
+		REQUIRE( cofactor == -12 );
+
+		minor = m.minor( 1, 0 );
+
+		REQUIRE( minor == 25 );
+
+		cofactor = m.cofactor( 1, 0 );
+
+		REQUIRE( cofactor == -25 );
+	}
 };

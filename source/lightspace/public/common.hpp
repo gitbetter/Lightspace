@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <stdexcept>
 
 #if DOUBLE_PRECISION
 using fpnum = double;
@@ -25,4 +26,15 @@ namespace ls {
 	{
 		return x > b ? b : ( x < a ? a : x );
 	}
+
+	class method_not_supported : public std::exception
+	{
+	public:
+
+		const char* what() const throw()
+		{ 
+			return "This method is not supported for the given class instantiation."; 
+		}
+
+	};
 }
