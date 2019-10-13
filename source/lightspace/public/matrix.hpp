@@ -3,7 +3,6 @@
 #include "common.hpp"
 #include "tensor.hpp"
 #include <array>
-#include <type_traits>
 
 namespace ls {
 	template<
@@ -156,6 +155,11 @@ namespace ls {
 
 		const matrix<T, Rows, Cols> inverse() const
 		{
+			if ( !is_invertible() )
+			{
+				throw method_not_supported();
+			}
+
 			matrix<T, Rows, Cols> inverse;
 			for ( auto i = 0; i < Rows; i++ )
 			{

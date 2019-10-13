@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <stdexcept>
+#include <type_traits>
 
 #if DOUBLE_PRECISION
 using fpnum = double;

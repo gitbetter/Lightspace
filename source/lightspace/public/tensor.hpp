@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include "common.hpp"
+#include <iostream>
 
 namespace ls 
 {
