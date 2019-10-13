@@ -18,13 +18,22 @@ namespace ls {
 		typename = std::enable_if_t<std::is_arithmetic<T>::value>
 	>
 	inline bool approx( const T& lhs, const T& rhs ) noexcept {
-		return fabs( static_cast<fpnum>( lhs ) -  static_cast<fpnum>( rhs ) ) <= epsilon;
+		return fabs( static_cast<fpnum>( lhs ) - static_cast<fpnum>( rhs ) ) <= epsilon;
 	}
 
 	template<typename T>
 	inline T clamp( T x, T a, T b ) noexcept
 	{
 		return x > b ? b : ( x < a ? a : x );
+	}
+
+	template<
+		typename T,
+		typename = std::enable_if_t<std::is_arithmetic<T>::value>
+	>
+	inline uint8_t sign( const T& num ) noexcept
+	{
+		return num < 0 ? -1 : 1;
 	}
 
 	class method_not_supported : public std::exception

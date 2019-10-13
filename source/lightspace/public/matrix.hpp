@@ -48,7 +48,7 @@ namespace ls {
 			{
 				for ( auto j = 0; j < Cols; j++ )
 				{
-					if ( _data[i][j] != rhs._data[i][j] )
+					if ( !approx( _data[i][j], rhs._data[i][j] ) )
 					{
 						return false;
 					}
@@ -63,7 +63,7 @@ namespace ls {
 			{
 				for ( auto j = 0; j < Cols; j++ )
 				{
-					if ( _data[i][j] != rhs._data[i][j] )
+					if ( !approx( _data[i][j], rhs._data[i][j] ) )
 					{
 						return true;
 					}
@@ -72,7 +72,7 @@ namespace ls {
 			return false;
 		}
 
-		const matrix<T, Rows, Cols> operator*( const matrix<T, Rows, Cols>& rhs ) const
+		const matrix<T, Rows, Cols> operator*( const matrix<T, Rows, Cols>& rhs ) const noexcept
 		{
 			matrix<T, Rows, Cols> result;
 			for ( auto i = 0; i < Rows; i++ )
@@ -88,7 +88,7 @@ namespace ls {
 			return result;
 		}
 
-		const tensor<T> operator*( const tensor<T>& rhs ) const
+		const tensor<T> operator*( const tensor<T>& rhs ) const noexcept
 		{
 			tensor<T> result;
 			for ( auto i = 0; i < Rows; i++ )
@@ -101,7 +101,7 @@ namespace ls {
 			return result;
 		}
 
-		const matrix<T, Rows, Cols> transpose() const
+		const matrix<T, Rows, Cols> transpose() const noexcept
 		{
 			matrix<T, Rows, Cols> result;
 			for ( auto i = 0; i < Rows; i++ )
@@ -116,17 +116,22 @@ namespace ls {
 
 		const T determinant() const
 		{
-			throw method_not_supported();
+			T det = 0;
+			for ( auto i = 0; i < Cols; i++ )
+			{
+				det += _data[0][i] * cofactor( 0, i );
+			}
+			return det;
 		}
 
 		const T minor( uint8_t r, uint8_t c ) const
 		{
-			throw method_not_supported();
+			return submatrix( r, c ).determinant();
 		}
 
 		const T cofactor( uint8_t r, uint8_t c ) const
 		{
-			throw method_not_supported();
+			return minor( r, c ) * ( ( r + c ) % 2 != 0 ? -1 : 1 );
 		}
 
 		const matrix<T, Rows - 1, Cols - 1> submatrix( uint8_t row_to_remove, uint8_t col_to_remove ) const
@@ -144,7 +149,25 @@ namespace ls {
 			return result;
 		}
 
-		static const matrix<T, Rows, Cols> identity()
+		const bool is_invertible() const
+		{
+			return determinant() != 0;
+		}
+
+		const matrix<T, Rows, Cols> inverse() const
+		{
+			matrix<T, Rows, Cols> inverse;
+			for ( auto i = 0; i < Rows; i++ )
+			{
+				for ( auto j = 0; j < Cols; j++ )
+				{
+					inverse._data[j][i] = cofactor( i, j ) / determinant();
+				}
+			}
+			return inverse;
+		}
+
+		static const matrix<T, Rows, Cols> identity() noexcept
 		{
 			static matrix<T, Rows, Cols> result;
 			if ( result._data[0][0] == 0 )
@@ -160,7 +183,7 @@ namespace ls {
 
 	private:
 
-		void initialize_with_zeroes()
+		void initialize_with_zeroes() noexcept
 		{
 			{
 				for ( auto i = 0; i < Rows; i++ )
@@ -173,7 +196,7 @@ namespace ls {
 			}
 		}
 
-		void initialize_with_identity()
+		void initialize_with_identity() noexcept
 		{
 			{
 				for ( auto i = 0; i < Rows; i++ )
@@ -186,7 +209,7 @@ namespace ls {
 			}
 		}
 
-		void initialize_with_elements( const std::initializer_list<T>& elements )
+		void initialize_with_elements( const std::initializer_list<T>& elements ) noexcept
 		{
 			auto it = elements.begin();
 			for ( auto i = 0; i < Rows; i++ )
@@ -226,27 +249,19 @@ namespace ls {
 	}
 
 	template<>
-	inline const fpnum matrix<fpnum, 3, 3>::minor( uint8_t r, uint8_t c ) const
+	inline const fpnum matrix<fpnum, 2, 2>::minor( uint8_t r, uint8_t c ) const
 	{
-		return submatrix( r, c ).determinant();
+		auto i = r == 0 ? 1 : 0;
+		auto j = c == 0 ? 1 : 0;
+		return _data[i][j];
 	}
 
 	template<>
-	inline const int matrix<int, 3, 3>::minor( uint8_t r, uint8_t c ) const
+	inline const int matrix<int, 2, 2>::minor( uint8_t r, uint8_t c ) const
 	{
-		return submatrix( r, c ).determinant();
-	}
-
-	template<>
-	inline const fpnum matrix<fpnum, 3, 3>::cofactor( uint8_t r, uint8_t c ) const
-	{
-		return ( r + c ) % 2 != 0 ? -minor( r, c ) : minor( r, c );
-	}
-
-	template<>
-	inline const int matrix<int, 3, 3>::cofactor( uint8_t r, uint8_t c ) const
-	{
-		return ( r + c ) % 2 != 0 ? -minor( r, c ) : minor( r, c );
+		auto i = r == 0 ? 1 : 0;
+		auto j = c == 0 ? 1 : 0;
+		return _data[i][j];
 	}
 
 	template<typename T, std::size_t Rows, std::size_t Cols>
