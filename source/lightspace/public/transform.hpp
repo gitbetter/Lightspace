@@ -2,7 +2,6 @@
 
 #include "common.hpp"
 #include "matrix.hpp"
-#include <type_traits>
 
 namespace ls {
 	namespace transform {
@@ -14,6 +13,54 @@ namespace ls {
 				0, 1, 0, y,
 				0, 0, 1, z,
 				0, 0, 0, 1
+			};
+			return mat;
+		}
+
+		template<typename T>
+		const matrix<T, 4, 4> scale( T x, T y, T z )
+		{
+			matrix<T, 4, 4> mat{
+				x, 0, 0, 0,
+				0, y, 0, 0,
+				0, 0, z, 0,
+				0, 0, 0, 1
+			};
+			return mat;
+		}
+
+		template<typename T>
+		const matrix<T, 4, 4> rotation_x( T rads )
+		{
+			matrix<T, 4, 4> mat{
+				1, 0,				 0,					0,
+				0, std::cos( rads ), -std::sin( rads ), 0,
+				0, std::sin( rads ), std::cos( rads ),  0,
+				0, 0,				 0,					1
+			};
+			return mat;
+		}
+
+		template<typename T>
+		const matrix<T, 4, 4> rotation_y( T rads )
+		{
+			matrix<T, 4, 4> mat{
+				std::cos( rads ),  0, std::sin( rads ), 0,
+				0,				   1, 0,			    0,
+				-std::sin( rads ), 0, std::cos( rads ), 0,
+				0,				   0, 0,				1
+			};
+			return mat;
+		}
+
+		template<typename T>
+		const matrix<T, 4, 4> rotation_z( T rads )
+		{
+			matrix<T, 4, 4> mat{
+				std::cos( rads ), -std::sin( rads ), 0, 0,
+				std::sin( rads ), std::cos( rads ),  0, 0,
+				0,				  0,				 1, 0,
+				0,				  0,				 0, 1
 			};
 			return mat;
 		}

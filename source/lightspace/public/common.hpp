@@ -3,6 +3,7 @@
 #include <limits>
 #include <stdexcept>
 #include <type_traits>
+#include <cmath>
 
 #if DOUBLE_PRECISION
 using fpnum = double;
@@ -13,6 +14,10 @@ using fpnum = float;
 namespace ls {
 	static constexpr float epsilon = std::numeric_limits<fpnum>::epsilon() * 100;
 	static constexpr float infinity = std::numeric_limits<fpnum>::infinity();
+	static constexpr float pi = 3.14159265358979323846f;
+	static constexpr float pi_over_2 = pi * 0.5f;
+	static constexpr float pi_over_4 = pi * 0.25f;
+	static constexpr float two_pi = pi * 2.f;
 
 	template<
 		typename T,
