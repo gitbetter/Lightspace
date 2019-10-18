@@ -98,4 +98,84 @@ TEST_CASE( "Transform processing",  "[transforms]")
 		REQUIRE( half_quarter * p == f_point( -0.7071067811f, 0.7071067811f, 0 ) );
 		REQUIRE( full_quarter * p == f_point( -1, 0, 0 ) );
 	}
+
+	SECTION( "Shearing x in proportion to y" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 1, 0, 0, 0, 0, 0 );
+
+		REQUIRE( tfm * p == i_point( 5, 3, 4 ) );
+	}
+
+	SECTION( "Shearing x in proportion to z" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 0, 1, 0, 0, 0, 0 );
+
+		REQUIRE( tfm * p == i_point( 6, 3, 4 ) );
+	}
+
+	SECTION( "Shearing y in proportion to x" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 0, 0, 1, 0, 0, 0 );
+
+		REQUIRE( tfm * p == i_point( 2, 5, 4 ) );
+	}
+
+	SECTION( "Shearing y in proportion to z" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 0, 0, 0, 1, 0, 0 );
+
+		REQUIRE( tfm * p == i_point( 2, 7, 4 ) );
+	}
+
+	SECTION( "Shearing z in proportion to x" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 0, 0, 0, 0, 1, 0 );
+
+		REQUIRE( tfm * p == i_point( 2, 3, 6 ) );
+	}
+
+	SECTION( "Shearing z in proportion to y" )
+	{
+		auto p = i_point( 2, 3, 4 );
+		auto tfm = transform::shear( 0, 0, 0, 0, 0, 1 );
+
+		REQUIRE( tfm * p == i_point( 2, 3, 7 ) );
+	}
+
+	SECTION( "Individual transformations are applied in sequence" )
+	{
+		auto p = f_point( 1, 0, 1 );
+		auto rot = transform::rotation_x( pi_over_2 );
+		auto scl = transform::scale( 5.f, 5.f, 5.f );
+		auto tsl = transform::translation( 10.f, 5.f, 7.f );
+
+		auto p2 = rot * p;
+
+		REQUIRE( p2 == f_point( 1, -1, 0 ) );
+
+		p2 = scl * p2;
+
+		REQUIRE( p2 == f_point( 5, -5, 0 ) );
+
+		p2 = tsl * p2;
+
+		REQUIRE( p2 == f_point( 15, 0, 7 ) );
+	}
+
+	SECTION( "Chained transforms must be applied in reverse order" )
+	{
+		auto p = f_point( 1, 0, 1 );
+		auto rot = transform::rotation_x( pi_over_2 );
+		auto scl = transform::scale( 5.f, 5.f, 5.f );
+		auto tsl = transform::translation( 10.f, 5.f, 7.f );
+
+		auto tfm = tsl * scl * rot;
+
+		REQUIRE( tfm * p == f_point( 15, 0, 7 ) );
+	}
 };

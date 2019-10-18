@@ -64,5 +64,17 @@ namespace ls {
 			};
 			return mat;
 		}
+
+		template<typename T>
+		const matrix<T, 4, 4> shear( T x_to_y, T x_to_z, T y_to_x, T y_to_z, T z_to_x, T z_to_y )
+		{
+			matrix<T, 4, 4> mat{
+				1,		x_to_y,	x_to_z, 0,
+				y_to_x, 1,		y_to_z, 0,
+				z_to_x, z_to_y,	1,		0,
+				0,		0,		0,		1
+			};
+			return mat;
+		}
 	}
 }
