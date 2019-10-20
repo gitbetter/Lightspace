@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <cmath>
 #include <string>
+#include <atomic>
 
 #if DOUBLE_PRECISION
 using fpnum = double;
@@ -34,6 +35,12 @@ namespace ls {
 	inline T clamp( T x, T a, T b ) noexcept
 	{
 		return x > b ? b : ( x < a ? a : x );
+	}
+
+	inline uint32_t get_uid() noexcept
+	{
+		static std::atomic_uint32_t current_uid = 0;
+		return ++current_uid;
 	}
 
 	template<

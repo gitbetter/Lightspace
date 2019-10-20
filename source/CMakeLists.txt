@@ -10,6 +10,12 @@ ${CORE_DIR}/public/matrix.hpp
 ${CORE_DIR}/private/matrix.cpp
 ${CORE_DIR}/public/transform.hpp
 ${CORE_DIR}/private/transform.cpp
+${CORE_DIR}/public/ray.hpp
+${CORE_DIR}/private/ray.cpp
+${CORE_DIR}/public/shapes.hpp
+${CORE_DIR}/private/shapes.cpp
+${CORE_DIR}/public/intersection.hpp
+${CORE_DIR}/private/intersection.cpp
 )
 
 set(CORE_INCLUDES

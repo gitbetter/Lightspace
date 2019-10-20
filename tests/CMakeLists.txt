@@ -6,4 +6,7 @@ ${TESTS_DIR}/tensor_tests.cpp
 ${TESTS_DIR}/canvas_tests.cpp
 ${TESTS_DIR}/matrix_tests.cpp
 ${TESTS_DIR}/transform_tests.cpp
+${TESTS_DIR}/ray_tests.cpp
+${TESTS_DIR}/sphere_tests.cpp
+${TESTS_DIR}/intersection_tests.cpp
 )

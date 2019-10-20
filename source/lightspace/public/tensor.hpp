@@ -196,6 +196,87 @@ namespace ls
 	using i_tensor = tensor<int>;
 	using c_tensor = tensor<char>;
 
+	/**
+ * Vector class and definitions
+ */
+
+	template<typename T>
+	class vector : public tensor<T>
+	{
+	public:
+
+		vector( T x, T y, T z ) :
+			tensor<T>( x, y, z, 0 )
+		{ }
+
+		vector( const tensor<T>& t ) :
+			tensor<T>( t.x, t.y, t.z, t.w )
+		{ }
+
+		tensor_t is() const noexcept override
+		{
+			return tensor_t::vector;
+		}
+
+		T length() const
+		{
+			return tensor<T>::length();
+		}
+
+		const T dot( const vector<T>& other )
+		{
+			return tensor<T>::dot( other );
+		}
+
+		const vector<T> cross( const vector<T>& other )
+		{
+			return vector<T>( y * other.z - z * other.y,
+							  z * other.x - x * other.z,
+							  x * other.y - y * other.x );
+		}
+
+		const vector<T> normalized()
+		{
+			return vector<T>( tensor<T>::normalized() );
+		}
+
+		const vector<T> operator+( const tensor<T>& rhs ) const noexcept
+		{
+			return vector<T>( add( rhs ) );
+		}
+
+		const vector<T> operator-( const tensor<T>& rhs ) const noexcept
+		{
+			return vector<T>( subtract( rhs ) );
+		}
+
+		const vector<T> operator-() const noexcept
+		{
+			return vector<T>( negate() );
+		}
+
+		const vector<T> operator*( T s ) const noexcept
+		{
+			return vector<T>( multiply( s ) );
+		}
+
+		const vector<T> operator/( const T& s ) const
+		{
+			return vector<T>( divide( s ) );
+		}
+
+	};
+
+	template<typename T>
+	inline vector<T> operator*( T lhs, const vector<T>& rhs )
+	{
+		return rhs * lhs;
+	}
+
+	using f_vector = vector<fpnum>;
+	using i_vector = vector<int>;
+	using c_vector = vector<char>;
+
 	/** 
 	 * Point class and definitions 
 	 */
@@ -228,7 +309,7 @@ namespace ls
 			return point<T>( add( rhs ) );
 		}
 
-		const point<T> operator-( const tensor<T>& rhs ) const noexcept
+		const vector<T> operator-( const tensor<T>& rhs ) const noexcept
 		{
 			return point<T>( subtract( rhs ) );
 		}
@@ -332,85 +413,4 @@ namespace ls
 	using f_color = color<fpnum>;
 	using i_color = color<int>;
 	using c_color = color<char>;
-
-	/** 
-	 * Vector class and definitions 
-	 */
-
-	template<typename T>
-	class vector : public tensor<T>
-	{
-	public:
-
-		vector( T x, T y, T z ) : 
-			tensor<T>( x, y, z, 0 )
-		{ }
-
-		vector( const tensor<T>& t ) :
-			tensor<T>( t.x, t.y, t.z, t.w )
-		{ }
-
-		tensor_t is() const noexcept override
-		{
-			return tensor_t::vector;
-		}
-
-		T length() const
-		{
-			return tensor<T>::length();
-		}
-
-		const T dot( const vector<T>& other )
-		{
-			return tensor<T>::dot( other );
-		}
-
-		const vector<T> cross( const vector<T>& other )
-		{
-			return vector<T>( y * other.z - z * other.y,
-							  z * other.x - x * other.z,
-							  x * other.y - y * other.x );
-		}
-
-		const vector<T> normalized()
-		{
-			return vector<T>( tensor<T>::normalized() );
-		}
-
-		const vector<T> operator+( const tensor<T>& rhs ) const noexcept
-		{
-			return vector<T>( add( rhs ) );
-		}
-
-		const vector<T> operator-( const tensor<T>& rhs ) const noexcept
-		{
-			return vector<T>( subtract( rhs ) );
-		}
-
-		const vector<T> operator-() const noexcept
-		{
-			return vector<T>( negate() );
-		}
-
-		const vector<T> operator*( T s ) const noexcept
-		{
-			return vector<T>( multiply( s ) );
-		}
-
-		const vector<T> operator/( const T& s ) const
-		{
-			return vector<T>( divide( s ) );
-		}
-
-	};
-
-	template<typename T>
-	inline vector<T> operator*( T lhs, const vector<T>& rhs )
-	{
-		return rhs * lhs;
-	}
-
-	using f_vector = vector<fpnum>;
-	using i_vector = vector<int>;
-	using c_vector = vector<char>;
 }
