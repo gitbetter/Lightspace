@@ -4,6 +4,9 @@
 #include "tensor.hpp"
 #include "transform.hpp"
 #include "canvas.hpp"
+#include "shapes.hpp"
+#include "ray.hpp"
+#include "intersection.hpp"
 
 using namespace std;
 
@@ -87,9 +90,38 @@ void run_clock_sample( ls::canvas& canv )
 	canv.write_to( "clock_render.ppm" );
 }
 
+void run_simple_sphere_sample( ls::canvas& canv )
+{
+    auto pixel_color = ls::f_color( 1, 0, 0 );
+    auto sph = ls::sphere::create();
+    auto wall_size = 7.f;
+    auto pixel_size = wall_size / canv.width();
+    auto half = wall_size * 0.5f;
+    auto ray_origin = ls::f_point( 0, 0, -5 );
+
+    for ( auto i = 0; i < canv.width(); i++ )
+    {
+        auto world_x = -half + pixel_size * i;
+        for ( auto j = 0; j < canv.height(); j++ )
+        {
+            auto world_y = half - pixel_size * j;
+            auto wall_position = ls::f_point( world_x, world_y, 10.f );
+            auto ray = ls::ray( ray_origin, ( wall_position - ray_origin ).normalized() );
+            auto hit = ls::hit( ls::intersect( sph, ray ) );
+            if ( hit != ls::intersection::none )
+            {
+                canv.draw_pixel( i, j, pixel_color );
+            }
+        }
+    }
+
+    canv.write_to( "simple_sphere_render.ppm" );
+}
+
+
 int main( int argc, char* argv[] )
 {
-	uint16_t canvas_width = 900, canvas_height = 550;
+	uint16_t canvas_width = 300, canvas_height = 300;
 	auto canv = ls::canvas( canvas_width, canvas_height );
 
 	// 1. The projectile sample runs a basic physics projectile launch simulation
@@ -99,7 +131,11 @@ int main( int argc, char* argv[] )
 
 	// 2. The clock sample draws twelve small dots at the usual analog clock hour locations
 	// and demonstrate the use of transforms
-	run_clock_sample( canv );
+	//run_clock_sample( canv );
+
+    // 3. The simple sphere sample draws the sillouette of a sphere onto the canvas, without any
+    // special lighting or shading.
+    run_simple_sphere_sample( canv );
 
 	return 0;
 }

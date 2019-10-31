@@ -1,10 +1,15 @@
 #include "intersection.hpp"
+#include <algorithm>
 
 namespace ls {
-	intersections intersect( const sphere& s, const ray& r )
+	const intersection intersection::none = intersection();
+
+	intersections intersect( const sphere::ptr& s, const ray& r )
 	{
-		f_vector sphere_to_ray = r.origin() - s.origin();
-		f_vector ray_direction = r.direction();
+        const ray transformed_ray = s->transform().inverse() * r;
+
+		f_vector sphere_to_ray = transformed_ray.origin() - s->origin();
+		f_vector ray_direction = transformed_ray.direction();
 
 		fpnum a = ray_direction.dot( ray_direction );
 		fpnum b = 2 * ray_direction.dot( sphere_to_ray );
@@ -27,5 +32,16 @@ namespace ls {
 			intersection( ( -b - discriminant_sqrt ) * denom, s ),
 			intersection( ( -b + discriminant_sqrt ) * denom, s )
 		};
+	}
+
+	intersection hit( const intersections& itrs )
+	{
+		auto itrsSorted = itrs;
+		std::sort( itrsSorted.begin(), itrsSorted.end(), [] ( intersection i1, intersection i2 ) {
+			return i1.time() < i2.time();
+		} );
+		auto it = itrsSorted.cbegin();
+		while ( it != itrsSorted.cend() && it->time() < 0 ) ++it;
+		return it == itrsSorted.cend() ? intersection::none : *it;
 	}
 }

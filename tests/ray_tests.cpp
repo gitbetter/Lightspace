@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "ray.hpp"
+#include "transform.hpp"
 
 using namespace ls;
 
@@ -24,4 +25,26 @@ TEST_CASE( "Ray processing",  "[rays]")
 		REQUIRE( r.position( -1.f ) == f_point( 1, 3, 4 ) );
 		REQUIRE( r.position( 2.5f ) == f_point( 4.5f, 3, 4 ) );
 	}
+
+    SECTION( "Translating a ray" )
+    {
+        auto r = ray( f_point( 1, 2, 3 ), f_vector( 0, 1, 0 ) );
+        auto m = transform::translation( 3.f, 4.f, 5.f );
+
+        auto r2 = m * r;
+
+        REQUIRE( r2.origin() == f_point( 4, 6, 8 ) );
+        REQUIRE( r2.direction() == f_vector( 0, 1, 0 ) );
+    }
+
+    SECTION( "Scaling a ray" )
+    {
+        auto r = ray( f_point( 1, 2, 3 ), f_vector( 0, 1, 0 ) );
+        auto m = transform::scale( 2.f, 3.f, 4.f );
+
+        auto r2 = m * r;
+
+        REQUIRE( r2.origin() == f_point( 2, 6, 12 ) );
+        REQUIRE( r2.direction() == f_vector( 0, 3, 0 ) );
+    }
 };

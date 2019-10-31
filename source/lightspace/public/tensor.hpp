@@ -65,7 +65,7 @@ namespace ls
 			return tensor_t::tensor;
 		}
 
-		const tensor<T> normalized()
+		const tensor<T> normalized() const
 		{
 			T lenInv = 1 / length();
 			return tensor<T>( x * lenInv, y * lenInv, z * lenInv, w * lenInv );
@@ -235,7 +235,7 @@ namespace ls
 							  x * other.y - y * other.x );
 		}
 
-		const vector<T> normalized()
+		const vector<T> normalized() const
 		{
 			return vector<T>( tensor<T>::normalized() );
 		}
@@ -299,7 +299,7 @@ namespace ls
 			return tensor_t::point;
 		}
 
-		const point<T> normalized()
+		const point<T> normalized() const
 		{
 			return point<T>( tensor<T>::normalized() );
 		}
@@ -367,7 +367,7 @@ namespace ls
 			return tensor_t::color;
 		}
 
-		const color<T> normalized()
+		const color<T> normalized() const
 		{
 			return color<T>( tensor<T>::normalized() );
 		}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tensor.hpp"
+#include "matrix.hpp"
 
 namespace ls {
 	class ray
@@ -32,4 +33,9 @@ namespace ls {
 		f_vector direction_;
 
 	};
+
+    inline const ray operator*( const f4_matrix& mat, const ray& r ) noexcept
+    {
+        return ray( mat * r.origin(), mat * r.direction() );
+    }
 }
