@@ -4,26 +4,26 @@
 #include "matrix.hpp"
 
 namespace ls {
-	class shape
-	{
-	public:
+    class shape
+    {
+    public:
 
-		using ptr = std::shared_ptr<shape>;
+        using ptr = std::shared_ptr<shape>;
 
-	public:
+    public:
 
-		shape() :
-			origin_( f_point( 0, 0, 0 ) ), id_( get_uid() ), transform_( f4_matrix::identity() )
-		{ }
-		shape( const f_point& o ) :
-			origin_( o ), id_( get_uid() ), transform_( f4_matrix::identity() )
-		{ }
-		virtual ~shape() { }
+        shape() :
+            origin_( f_point( 0, 0, 0 ) ), id_( get_uid() ), transform_( f4_matrix::identity() )
+        { }
+        shape( const f_point& o ) :
+            origin_( o ), id_( get_uid() ), transform_( f4_matrix::identity() )
+        { }
+        virtual ~shape() { }
 
-		const f_point& origin() const noexcept
-		{
-			return origin_;
-		}
+        const f_point& origin() const noexcept
+        {
+            return origin_;
+        }
 
         const f4_matrix& transform() const noexcept
         {
@@ -35,54 +35,67 @@ namespace ls {
             transform_ = t;
         }
 
-		bool operator==( const shape& rhs ) const noexcept
-		{
-			return id_ == rhs.id_;
-		}
+        virtual f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept
+        {
+            return f_vector( 0, 0, 0 );
+        }
 
-		template<typename T, typename... Ts>
-		static ptr create( Ts&&... args ) noexcept
-		{
-			return ptr( new shape( std::forward<Ts>( args ) ) );
-		}
+        bool operator==( const shape& rhs ) const noexcept
+        {
+            return id_ == rhs.id_;
+        }
 
-	protected:
+        template<typename T, typename... Ts>
+        static ptr create( Ts&&... args ) noexcept
+        {
+            return ptr( new shape( std::forward<Ts>( args ) ) );
+        }
 
-		uint32_t id_;
-		f_point origin_;
+    protected:
+
+        uint32_t id_;
+        f_point origin_;
         f4_matrix transform_;
 
-	};
+    };
 
-	class sphere : public shape
-	{
-	public:
+    class sphere : public shape
+    {
+    public:
 
-		using ptr = std::shared_ptr<sphere>;
+        using ptr = std::shared_ptr<sphere>;
 
-	public:
+    public:
 
-		sphere() : shape(), 
-			radius_( 1 )
-		{ }
-		sphere( const f_point& o, fpnum r ) : shape( o ),
-			radius_( r )
-		{ }
+        sphere() : shape(),
+            radius_( 1 )
+        { }
+        sphere( const f_point& o, fpnum r ) : shape( o ),
+            radius_( r )
+        { }
 
-		const fpnum radius() const noexcept
-		{
-			return radius_;
-		}
+        const fpnum radius() const noexcept
+        {
+            return radius_;
+        }
 
-		template<typename... Ts>
-		static ptr create(Ts&&... args) noexcept
-		{
-			return ptr( new sphere( std::forward<Ts>(args)... ) );
-		}
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
+        {
+            auto os_point = transform_.inverse() * f_point( x, y, z );
+            auto os_normal = os_point - f_point( 0, 0, 0 );
+            auto ws_normal = transform_.inverse().transpose() * os_normal;
+            return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+        }
 
-	private:
+        template<typename... Ts>
+        static ptr create( Ts&&... args ) noexcept
+        {
+            return ptr( new sphere( std::forward<Ts>( args )... ) );
+        }
 
-		fpnum radius_;
+    private:
 
-	};
+        fpnum radius_;
+
+    };
 }
