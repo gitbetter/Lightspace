@@ -2,6 +2,7 @@
 
 #include "common.hpp"
 #include "tensor.hpp"
+#include "materials.hpp"
 
 namespace ls {
     class light
@@ -58,4 +59,6 @@ namespace ls {
         { }
 
     };
+
+    f_color phong_lighting( const phong_material& mat, const light& l, const f_point& position, const f_vector& eye, const f_vector& normal );
 }

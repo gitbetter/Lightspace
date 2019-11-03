@@ -225,7 +225,7 @@ TEST_CASE( "Color processing", "[tensors][colors]" )
         auto color1 = f_color( 0.98f, 0.23f, 1.2f );
         auto color2 = f_color( 0.12f, 0.44f, 0.3f );
 
-        REQUIRE( color1 + color2 == f_tensor( 1.1f, 0.67f, 1.5f, 2.f ) );
+        REQUIRE( color1 + color2 == f_tensor( 1.1f, 0.67f, 1.5f, 1.f ) );
     }
 
     SECTION( "Subtracting two colors" )
@@ -233,15 +233,15 @@ TEST_CASE( "Color processing", "[tensors][colors]" )
         auto color1 = f_color( 0.66f, 0.9f, 1.f );
         auto color2 = f_color( 0.3f, 0.12f, 0.3f );
 
-        REQUIRE( color1 - color2 == f_tensor( 0.36f, 0.78f, 0.7f, 0 ) );
+        REQUIRE( color1 - color2 == f_tensor( 0.36f, 0.78f, 0.7f, 1.f ) );
     }
 
     SECTION( "Multiplying a color by a scalar" )
     {
         auto color = f_color( 0.33f, 0.1f, 0.5f );
 
-        REQUIRE( color * 0.5f == f_tensor( 0.165f, 0.05f, 0.25f, 0.5f ) );
-        REQUIRE( 0.5f * color == f_tensor( 0.165f, 0.05f, 0.25f, 0.5f ) );
+        REQUIRE( color * 0.5f == f_tensor( 0.165f, 0.05f, 0.25f, 1.f ) );
+        REQUIRE( 0.5f * color == f_tensor( 0.165f, 0.05f, 0.25f, 1.f ) );
     }
 
     SECTION( "Multiplying colors" )
@@ -249,6 +249,6 @@ TEST_CASE( "Color processing", "[tensors][colors]" )
         auto color1 = f_color( 1, 0.2f, 0.4f );
         auto color2 = f_color( 0.9f, 1, 0.1f );
 
-        REQUIRE( color1 * color2 == f_tensor( 0.9f, 0.2f, 0.04f, 1 ) );
+        REQUIRE( color1 * color2 == f_tensor( 0.9f, 0.2f, 0.04f, 1.f ) );
     }
 };

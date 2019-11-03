@@ -36,7 +36,7 @@ namespace ls {
             _transform = t;
         }
 
-        const phong_material material() const noexcept
+        const phong_material& material() const noexcept
         {
             return _mat;
         }

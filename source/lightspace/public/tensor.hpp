@@ -379,32 +379,44 @@ namespace ls
 
         const color<T> operator+( const tensor<T>& rhs ) const noexcept
         {
-            return color<T>( add( rhs ) );
+            auto col = add( rhs );
+            col.a = 1.f;
+            return color<T>( col );
         }
 
         const color<T> operator-( const tensor<T>& rhs ) const noexcept
         {
-            return color<T>( subtract( rhs ) );
+            auto col = subtract( rhs );
+            col.a = 1.f;
+            return color<T>( col );
         }
 
         const color<T> operator-() const noexcept
         {
-            return color<T>( negate() );
+            auto col = negate();
+            col.a = 1.f;
+            return color<T>( col );
         }
 
         const color<T> operator*( T s ) const noexcept
         {
-            return color<T>( multiply( s ) );
+            auto col = multiply( s );
+            col.a = 1.f;
+            return color<T>( col );
         }
 
         const color<T> operator*( const color<T>& rhs ) const noexcept
         {
-            return color<T>( hadamard_product( rhs ) );
+            auto col = hadamard_product( rhs );
+            col.a = 1.f;
+            return color<T>( col );
         }
 
         const color<T> operator/( const T& s ) const
         {
-            return color<T>( divide( s ) );
+            auto col = divide( s );
+            col.a = 1.f;
+            return color<T>( col );
         }
 
     };

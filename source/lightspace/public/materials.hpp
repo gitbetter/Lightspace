@@ -15,7 +15,7 @@ namespace ls {
 
     public:
 
-        f_color color;
+        f_color surface_color;
         fpnum ambient;
         fpnum diffuse;
         fpnum specular;
@@ -24,12 +24,12 @@ namespace ls {
     public:
 
         phong_material() :
-            color( f_color( 1, 1, 1 ) ), ambient( 0.1f ), diffuse( 0.9f ), specular( 0.9f ), shininess( 200.f )
+            surface_color( f_color( 1, 1, 1 ) ), ambient( 0.1f ), diffuse( 0.9f ), specular( 0.9f ), shininess( 200.f )
         { }
 
         bool operator==( const phong_material& rhs ) const noexcept
         {
-            return color == rhs.color && approx( ambient, rhs.ambient ) && approx( diffuse, rhs.diffuse ) &&
+            return surface_color == rhs.surface_color && approx( ambient, rhs.ambient ) && approx( diffuse, rhs.diffuse ) &&
                 approx( specular, rhs.specular ) && approx( shininess, rhs.shininess );
         }
 

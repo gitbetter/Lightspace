@@ -7,6 +7,8 @@
 #include "shapes.hpp"
 #include "ray.hpp"
 #include "intersection.hpp"
+#include "materials.hpp"
+#include "lights.hpp"
 
 using namespace std;
 
@@ -92,12 +94,17 @@ void run_clock_sample( ls::canvas& canv )
 
 void run_simple_sphere_sample( ls::canvas& canv )
 {
-    auto pixel_color = ls::f_color( 1, 0, 0 );
     auto sph = ls::sphere::create();
     auto wall_size = 7.f;
     auto pixel_size = wall_size / canv.width();
     auto half = wall_size * 0.5f;
     auto ray_origin = ls::f_point( 0, 0, -5 );
+    auto scene_light = ls::point_light( ls::f_color( 1, 1, 1 ), ls::f_point( 10, 10, -10 ) );
+
+    auto mat = ls::phong_material();
+    mat.surface_color = ls::f_color( 1.f, 0.65f, 0.3f );
+    mat.shininess = 125.f;
+    sph->set_material( mat );
 
     for ( auto i = 0; i < canv.width(); i++ )
     {
@@ -110,6 +117,10 @@ void run_simple_sphere_sample( ls::canvas& canv )
             auto hit = ls::hit( ls::intersect( sph, ray ) );
             if ( hit != ls::intersection::none )
             {
+                auto pos = ray.position( hit.time() );
+                auto norm = hit.object()->normal( pos.x, pos.y, pos.z );
+                auto eye = -ray.direction();
+                auto pixel_color = ls::phong_lighting( hit.object()->material(), scene_light, pos, eye, norm );
                 canv.draw_pixel( i, j, pixel_color );
             }
         }
@@ -133,8 +144,8 @@ int main( int argc, char* argv[] )
     // and demonstrate the use of transforms
     //run_clock_sample( canv );
 
-    // 3. The simple sphere sample draws the sillouette of a sphere onto the canvas, without any
-    // special lighting or shading.
+    // 3. The simple sphere sample draws a simple sphere onto the canvas, using the phong lighting
+    // model to color the sphere.
     run_simple_sphere_sample( canv );
 
     return 0;
