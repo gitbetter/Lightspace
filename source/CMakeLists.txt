@@ -16,6 +16,10 @@ ${CORE_DIR}/public/shapes.hpp
 ${CORE_DIR}/private/shapes.cpp
 ${CORE_DIR}/public/intersection.hpp
 ${CORE_DIR}/private/intersection.cpp
+${CORE_DIR}/public/lights.hpp
+${CORE_DIR}/private/lights.cpp
+${CORE_DIR}/public/materials.hpp
+${CORE_DIR}/private/materials.cpp
 )
 
 set(CORE_INCLUDES

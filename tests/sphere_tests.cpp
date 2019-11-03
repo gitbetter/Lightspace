@@ -3,6 +3,7 @@
 #include "shapes.hpp"
 #include "intersection.hpp"
 #include "transform.hpp"
+#include "materials.hpp"
 
 using namespace ls;
 
@@ -172,5 +173,22 @@ TEST_CASE( "Sphere processing", "[spheres]" )
         auto n = s->normal( 0, 0.7071067f, -0.7071067f );
 
         REQUIRE( n == f_vector( 0, 0.97014f, -0.24254f ) );
+    }
+
+    SECTION( "A sphere has a default material" )
+    {
+        auto s = sphere::create();
+
+        REQUIRE( s->material() == phong_material() );
+    }
+
+    SECTION( "A sphere may be assigned a material" )
+    {
+        auto s = sphere::create();
+        auto m = phong_material();
+        m.ambient = 1.f;
+        s->set_material( m );
+
+        REQUIRE( s->material() == m );
     }
 };

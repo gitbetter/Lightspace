@@ -2,6 +2,7 @@
 
 #include "tensor.hpp"
 #include "matrix.hpp"
+#include "materials.hpp"
 
 namespace ls {
     class shape
@@ -13,26 +14,36 @@ namespace ls {
     public:
 
         shape() :
-            origin_( f_point( 0, 0, 0 ) ), id_( get_uid() ), transform_( f4_matrix::identity() )
+            _origin( f_point( 0, 0, 0 ) ), _id( get_uid() ), _transform( f4_matrix::identity() )
         { }
         shape( const f_point& o ) :
-            origin_( o ), id_( get_uid() ), transform_( f4_matrix::identity() )
+            _origin( o ), _id( get_uid() ), _transform( f4_matrix::identity() )
         { }
         virtual ~shape() { }
 
         const f_point& origin() const noexcept
         {
-            return origin_;
+            return _origin;
         }
 
         const f4_matrix& transform() const noexcept
         {
-            return transform_;
+            return _transform;
         }
 
         void set_transform( const f4_matrix& t ) noexcept
         {
-            transform_ = t;
+            _transform = t;
+        }
+
+        const phong_material material() const noexcept
+        {
+            return _mat;
+        }
+
+        void set_material( const phong_material& mat ) noexcept
+        {
+            _mat = mat;
         }
 
         virtual f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept
@@ -42,7 +53,7 @@ namespace ls {
 
         bool operator==( const shape& rhs ) const noexcept
         {
-            return id_ == rhs.id_;
+            return _id == rhs._id;
         }
 
         template<typename T, typename... Ts>
@@ -53,9 +64,10 @@ namespace ls {
 
     protected:
 
-        uint32_t id_;
-        f_point origin_;
-        f4_matrix transform_;
+        uint32_t _id;
+        f_point _origin;
+        f4_matrix _transform;
+        phong_material _mat;
 
     };
 
@@ -68,22 +80,22 @@ namespace ls {
     public:
 
         sphere() : shape(),
-            radius_( 1 )
+            _radius( 1 )
         { }
         sphere( const f_point& o, fpnum r ) : shape( o ),
-            radius_( r )
+            _radius( r )
         { }
 
         const fpnum radius() const noexcept
         {
-            return radius_;
+            return _radius;
         }
 
         f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
         {
-            auto os_point = transform_.inverse() * f_point( x, y, z );
+            auto os_point = _transform.inverse() * f_point( x, y, z );
             auto os_normal = os_point - f_point( 0, 0, 0 );
-            auto ws_normal = transform_.inverse().transpose() * os_normal;
+            auto ws_normal = _transform.inverse().transpose() * os_normal;
             return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
         }
 
@@ -95,7 +107,7 @@ namespace ls {
 
     private:
 
-        fpnum radius_;
+        fpnum _radius;
 
     };
 }
