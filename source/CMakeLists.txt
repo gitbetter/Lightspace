@@ -20,6 +20,8 @@ ${CORE_DIR}/public/lights.hpp
 ${CORE_DIR}/private/lights.cpp
 ${CORE_DIR}/public/materials.hpp
 ${CORE_DIR}/private/materials.cpp
+${CORE_DIR}/public/world.hpp
+${CORE_DIR}/private/world.cpp
 )
 
 set(CORE_INCLUDES

@@ -4,7 +4,7 @@
 namespace ls {
     const intersection intersection::none = intersection();
 
-    intersections intersect( const sphere::ptr& s, const ray& r )
+    intersections intersect( const shape::ptr& s, const ray& r )
     {
         const ray transformed_ray = s->transform().inverse() * r;
 
@@ -34,14 +34,28 @@ namespace ls {
         };
     }
 
-    intersection hit( const intersections& itrs )
+    intersections intersect( const world::ptr& w, const ray& r )
     {
-        auto itrsSorted = itrs;
-        std::sort( itrsSorted.begin(), itrsSorted.end(), [] ( intersection i1, intersection i2 ) {
+        intersections itrs;
+        for ( const shape::ptr& object : w->objects() )
+        {
+            auto object_itrs = intersect( object, r );
+            itrs.insert( itrs.end(), object_itrs.begin(), object_itrs.end() );
+        }
+        std::sort( itrs.begin(), itrs.end(), [] ( intersection i1, intersection i2 ) {
             return i1.time() < i2.time();
         } );
-        auto it = itrsSorted.cbegin();
-        while ( it != itrsSorted.cend() && it->time() < 0 ) ++it;
-        return it == itrsSorted.cend() ? intersection::none : *it;
+        return itrs;
+    }
+
+    intersection hit( const intersections& itrs )
+    {
+        auto itrs_sorted = itrs;
+        std::sort( itrs_sorted.begin(), itrs_sorted.end(), [] ( intersection i1, intersection i2 ) {
+            return i1.time() < i2.time();
+        } );
+        auto it = itrs_sorted.cbegin();
+        while ( it != itrs_sorted.cend() && it->time() < 0 ) ++it;
+        return it == itrs_sorted.cend() ? intersection::none : *it;
     }
 }

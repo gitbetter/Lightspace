@@ -11,4 +11,5 @@ ${TESTS_DIR}/sphere_tests.cpp
 ${TESTS_DIR}/intersection_tests.cpp
 ${TESTS_DIR}/light_tests.cpp
 ${TESTS_DIR}/material_tests.cpp
+${TESTS_DIR}/world_tests.cpp
 )

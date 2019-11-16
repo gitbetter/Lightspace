@@ -1,5 +1,6 @@
 #pragma once
 
+#include "world.hpp"
 #include "shapes.hpp"
 #include "ray.hpp"
 #include <vector>
@@ -54,6 +55,7 @@ namespace ls {
 
     using intersections = std::vector<intersection>;
 
-    intersections intersect( const sphere::ptr& s, const ray& r );
+    intersections intersect( const shape::ptr& s, const ray& r );
+    intersections intersect( const world::ptr& s, const ray& r );
     intersection hit( const intersections& itrs );
 }

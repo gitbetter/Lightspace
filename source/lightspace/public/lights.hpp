@@ -14,35 +14,46 @@ namespace ls {
     public:
 
         light( const f_color& intensity, const f_point& position ) :
-            intensity_( intensity ), position_( position )
+            _intensity( intensity ), _position( position )
         { }
         virtual ~light() 
         { }
 
         const f_color intensity() const noexcept
         {
-            return intensity_;
+            return _intensity;
         }
 
         void set_intensity( const f_color& intensity ) noexcept
         {
-            intensity_ = intensity;
+            _intensity = intensity;
         }
 
         const f_point position() const noexcept
         {
-            return position_;
+            return _position;
         }
 
         void set_position( const f_point& position ) noexcept
         {
-            position_ = position;
+            _position = position;
+        }
+
+        bool operator==( const light& rhs ) const noexcept
+        {
+            return _intensity == rhs._intensity && _position == rhs._position;
+        }
+
+        template<typename... Ts>
+        static ptr create( Ts&&... args ) noexcept
+        {
+            return ptr( new shape( std::forward<Ts>( args ) ) );
         }
 
     private:
 
-        f_color intensity_;
-        f_point position_;
+        f_color _intensity;
+        f_point _position;
 
     };
 
@@ -57,6 +68,12 @@ namespace ls {
         point_light( const f_color& intensity, const f_point& position ) :
             light( intensity, position )
         { }
+
+        template<typename... Ts>
+        static ptr create( Ts&&... args ) noexcept
+        {
+            return ptr( new point_light( std::forward<Ts>( args )... ) );
+        }
 
     };
 

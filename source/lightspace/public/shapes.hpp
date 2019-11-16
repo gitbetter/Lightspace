@@ -16,7 +16,7 @@ namespace ls {
         shape() :
             _origin( f_point( 0, 0, 0 ) ), _id( get_uid() ), _transform( f4_matrix::identity() )
         { }
-        shape( const f_point& o ) :
+        explicit shape( const f_point& o ) :
             _origin( o ), _id( get_uid() ), _transform( f4_matrix::identity() )
         { }
         virtual ~shape() { }
@@ -51,12 +51,17 @@ namespace ls {
             return f_vector( 0, 0, 0 );
         }
 
+        virtual bool identical_to( const shape::ptr other ) const noexcept
+        {
+            return other && _origin == other->_origin && _transform == other->_transform && _mat == other->_mat;
+        }
+
         bool operator==( const shape& rhs ) const noexcept
         {
             return _id == rhs._id;
         }
 
-        template<typename T, typename... Ts>
+        template<typename... Ts>
         static ptr create( Ts&&... args ) noexcept
         {
             return ptr( new shape( std::forward<Ts>( args ) ) );
@@ -97,6 +102,16 @@ namespace ls {
             auto os_normal = os_point - f_point( 0, 0, 0 );
             auto ws_normal = _transform.inverse().transpose() * os_normal;
             return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+        }
+
+        bool identical_to( const shape::ptr other ) const noexcept override
+        {
+            auto other_sphere = std::dynamic_pointer_cast<sphere>( other );
+            if ( !other_sphere )
+            {
+                return false;
+            }
+            return _radius == other_sphere->_radius && shape::identical_to( other );
         }
 
         template<typename... Ts>
