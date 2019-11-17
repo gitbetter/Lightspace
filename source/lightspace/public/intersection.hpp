@@ -1,7 +1,5 @@
 #pragma once
 
-#include "world.hpp"
-#include "shapes.hpp"
 #include "ray.hpp"
 #include <vector>
 
@@ -17,7 +15,7 @@ namespace ls {
         intersection() :
             time_( 0 ), object_( nullptr )
         { }
-        intersection( fpnum t, const shape::ptr& s ) :
+        intersection( fpnum t, const shape_ptr& s ) :
             time_( t ), object_( s )
         { }
 
@@ -26,7 +24,7 @@ namespace ls {
             return time_;
         }
 
-        const shape::ptr& object() const noexcept
+        const shape_ptr& object() const noexcept
         {
             return object_;
         }
@@ -49,13 +47,27 @@ namespace ls {
     protected:
 
         fpnum time_;
-        shape::ptr object_;
+        shape_ptr object_;
 
+    };
+
+    struct intersection_state
+    {
+        fpnum time;
+        shape_ptr object;
+        f_point point;
+        f_vector eye;
+        f_vector normal;
+        bool inside;
+
+        intersection_state() :
+            time( 0 ), object( nullptr ), point( f_point(0, 0, 0) ), eye( f_vector( 0, 0, 0 ) ), 
+            normal( f_vector( 0, 0, 0 ) ), inside( false )
+        { }
     };
 
     using intersections = std::vector<intersection>;
 
-    intersections intersect( const shape::ptr& s, const ray& r );
-    intersections intersect( const world::ptr& s, const ray& r );
+    intersection_state prepare_intersection_state( const intersection& i, const ray& r );
     intersection hit( const intersections& itrs );
 }

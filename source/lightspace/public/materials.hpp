@@ -11,10 +11,6 @@ namespace ls {
     {
     public:
 
-        using ptr = std::shared_ptr<phong_material>;
-
-    public:
-
         f_color surface_color;
         fpnum ambient;
         fpnum diffuse;
@@ -35,6 +31,8 @@ namespace ls {
             return surface_color == rhs.surface_color && approx( ambient, rhs.ambient ) && approx( diffuse, rhs.diffuse ) &&
                 approx( specular, rhs.specular ) && approx( shininess, rhs.shininess );
         }
+
+        PTR_FACTORY( phong_material )
 
     };
 }

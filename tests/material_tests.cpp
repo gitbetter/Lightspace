@@ -23,7 +23,7 @@ TEST_CASE( "Material processing", "[materials]" )
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
-        auto light = point_light( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
 
         REQUIRE( phong_lighting(m, light, p, eye_v, normal_v) == f_color( 1.9f, 1.9f, 1.9f ) );
     }
@@ -34,7 +34,7 @@ TEST_CASE( "Material processing", "[materials]" )
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0.70710678f, -0.70710678f );
         auto normal_v = f_vector( 0, 0, -1 );
-        auto light = point_light( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 1.f, 1.f, 1.f ) );
     }
@@ -45,7 +45,7 @@ TEST_CASE( "Material processing", "[materials]" )
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
-        auto light = point_light( f_color( 1, 1, 1 ), f_point( 0, 10, -10 ) );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 10, -10 ) );
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 0.7364f, 0.7364f, 0.7364f ) );
     }
@@ -56,7 +56,7 @@ TEST_CASE( "Material processing", "[materials]" )
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, -0.70710678f, -0.70710678f );
         auto normal_v = f_vector( 0, 0, -1 );
-        auto light = point_light( f_color( 1, 1, 1 ), f_point( 0, 10, -10 ) );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 10, -10 ) );
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 1.6364f, 1.6364f, 1.6364f ) );
     }
@@ -67,7 +67,7 @@ TEST_CASE( "Material processing", "[materials]" )
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
-        auto light = point_light( f_color( 1, 1, 1 ), f_point( 0, 0, 10 ) );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, 10 ) );
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 0.1f, 0.1f, 0.1f ) );
     }

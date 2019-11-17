@@ -1,4 +1,5 @@
 #include "catch.hpp"
+#include "shapes.hpp"
 #include "intersection.hpp"
 
 using namespace ls;
@@ -66,5 +67,42 @@ TEST_CASE( "Intersection processing", "[intersections]" )
         auto xs = intersections{ i1, i2, i3, i4 };
 
         REQUIRE( hit( xs ) == i4 );
+    }
+
+    SECTION( "Precomputing the state of an intersection" )
+    {
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto s = sphere::create();
+        auto i = intersection( 4.f, s );
+        auto istate = prepare_intersection_state( i, r );
+
+        REQUIRE( istate.time == i.time() );
+        REQUIRE( istate.object == i.object() );
+        REQUIRE( istate.point == f_point( 0, 0, -1 ) );
+        REQUIRE( istate.eye == f_vector( 0, 0, -1 ) );
+        REQUIRE( istate.normal == f_vector( 0, 0, -1 ) );
+    }
+
+    SECTION( "The hit, when an intersection occurs on the outside" )
+    {
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto s = sphere::create();
+        auto i = intersection( 4.f, s );
+        auto istate = prepare_intersection_state( i, r );
+
+        REQUIRE( istate.inside == false );
+    }
+
+    SECTION( "The hit, when an intersection occurs on the inside" )
+    {
+        auto r = ray( f_point( 0, 0, 0 ), f_vector( 0, 0, 1 ) );
+        auto s = sphere::create();
+        auto i = intersection( 1.f, s );
+        auto istate = prepare_intersection_state( i, r );
+
+        REQUIRE( istate.point == f_point( 0, 0, 1 ) );
+        REQUIRE( istate.eye == f_vector( 0, 0, -1 ) );
+        REQUIRE( istate.normal == f_vector( 0, 0, -1 ) );
+        REQUIRE( istate.inside == true );
     }
 };

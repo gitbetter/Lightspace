@@ -3,14 +3,11 @@
 #include "tensor.hpp"
 #include "matrix.hpp"
 #include "materials.hpp"
+#include "intersection.hpp"
 
 namespace ls {
     class shape
     {
-    public:
-
-        using ptr = std::shared_ptr<shape>;
-
     public:
 
         shape() :
@@ -51,7 +48,7 @@ namespace ls {
             return f_vector( 0, 0, 0 );
         }
 
-        virtual bool identical_to( const shape::ptr other ) const noexcept
+        virtual bool identical_to( const shape_ptr other ) const noexcept
         {
             return other && _origin == other->_origin && _transform == other->_transform && _mat == other->_mat;
         }
@@ -61,11 +58,7 @@ namespace ls {
             return _id == rhs._id;
         }
 
-        template<typename... Ts>
-        static ptr create( Ts&&... args ) noexcept
-        {
-            return ptr( new shape( std::forward<Ts>( args ) ) );
-        }
+        PTR_FACTORY( shape )
 
     protected:
 
@@ -78,10 +71,6 @@ namespace ls {
 
     class sphere : public shape
     {
-    public:
-
-        using ptr = std::shared_ptr<sphere>;
-
     public:
 
         sphere() : shape(),
@@ -104,7 +93,7 @@ namespace ls {
             return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
         }
 
-        bool identical_to( const shape::ptr other ) const noexcept override
+        bool identical_to( const shape_ptr other ) const noexcept override
         {
             auto other_sphere = std::dynamic_pointer_cast<sphere>( other );
             if ( !other_sphere )
@@ -114,15 +103,13 @@ namespace ls {
             return _radius == other_sphere->_radius && shape::identical_to( other );
         }
 
-        template<typename... Ts>
-        static ptr create( Ts&&... args ) noexcept
-        {
-            return ptr( new sphere( std::forward<Ts>( args )... ) );
-        }
+        PTR_FACTORY( sphere )
 
     private:
 
         fpnum _radius;
 
     };
+
+    intersections intersect( const shape_ptr& s, const ray& r );
 }

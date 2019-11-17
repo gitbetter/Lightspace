@@ -13,6 +13,17 @@ using fpnum = double;
 using fpnum = float;
 #endif
 
+#define DECLARE_SHARED_PTR_TYPE(type) \
+    class type;\
+    using type##_ptr = std::shared_ptr<type>;
+
+#define PTR_FACTORY(type)\
+template<typename... Ts>\
+static type##_ptr create( Ts&&... args ) noexcept\
+{\
+    return type##_ptr( new type( std::forward<Ts>( args )... ) );\
+}
+
 namespace ls {
     static constexpr float epsilon = std::numeric_limits<fpnum>::epsilon() * 100;
     static constexpr float infinity = std::numeric_limits<fpnum>::infinity();
@@ -23,6 +34,13 @@ namespace ls {
     static constexpr float pi_over_5 = pi * 0.2f;
     static constexpr float pi_over_6 = pi * 0.16667f;
     static constexpr float two_pi = pi * 2.f;
+
+    DECLARE_SHARED_PTR_TYPE( shape );
+    DECLARE_SHARED_PTR_TYPE( sphere );
+    DECLARE_SHARED_PTR_TYPE( world );
+    DECLARE_SHARED_PTR_TYPE( light );
+    DECLARE_SHARED_PTR_TYPE( point_light );
+    DECLARE_SHARED_PTR_TYPE( phong_material );
 
     template<
         typename T,

@@ -44,4 +44,31 @@ TEST_CASE( "World processing", "[world]" )
         REQUIRE( xs[2].time() == 5.5f );
         REQUIRE( xs[3].time() == 6.f );
     }
+
+    SECTION( "Shading an intersection" )
+    {
+        auto w = world::create_default();
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto s = w->objects()[0];
+        auto i = intersection( 4, s );
+
+        auto state = prepare_intersection_state( i, r );
+        auto c = w->shade_hit( state );
+
+        REQUIRE( c == f_color( 0.38066f, 0.47583f, 0.2855f ) );
+    }
+
+    SECTION( "Shading an intersection from the inside" )
+    {
+        auto w = world::create_default();
+        w->set_light( point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0.25f, 0 ) ) );
+        auto r = ray( f_point( 0, 0, 0 ), f_vector( 0, 0, 1 ) );
+        auto s = w->objects()[1];
+        auto i = intersection( 0.5f, s );
+
+        auto state = prepare_intersection_state( i, r );
+        auto c = w->shade_hit( state );
+
+        REQUIRE( c == f_color( 0.90498f, 0.90498f, 0.90498f ) );
+    }
 };

@@ -99,7 +99,7 @@ void run_simple_sphere_sample( ls::canvas& canv )
     auto pixel_size = wall_size / canv.width();
     auto half = wall_size * 0.5f;
     auto ray_origin = ls::f_point( 0, 0, -5 );
-    auto scene_light = ls::point_light( ls::f_color( 1, 1, 1 ), ls::f_point( 10, 10, -10 ) );
+    auto scene_light = ls::point_light::create( ls::f_color( 1, 1, 1 ), ls::f_point( 10, 10, -10 ) );
 
     auto mat = ls::phong_material();
     mat.surface_color = ls::f_color( 1.f, 0.65f, 0.3f );

@@ -5,40 +5,42 @@
 #include "shapes.hpp"
 #include "lights.hpp"
 #include "transform.hpp"
+#include "intersection.hpp"
 
 namespace ls {
     class world
     {
     public:
 
-        using ptr = std::shared_ptr<world>;
-
-    public:
-
-        const light::ptr light() const noexcept
+        const light_ptr light() const noexcept
         {
             return _light;
         }
 
-        const std::vector<shape::ptr>& objects() const noexcept
+        void set_light( light_ptr light ) noexcept
+        {
+            _light = light;
+        }
+
+        const std::vector<shape_ptr>& objects() const noexcept
         {
             return _objects;
         }
 
-        bool contains( const shape::ptr& s ) const;
+        bool contains( const shape_ptr& s ) const;
 
-        static ptr create_default() noexcept;
+        static world_ptr create_default() noexcept;
 
-        template<typename... Ts>
-        static ptr create( Ts&&... args ) noexcept
-        {
-            return ptr( new world( std::forward<Ts>( args )... ) );
-        }
+        f_color shade_hit( const intersection_state& state );
+
+        PTR_FACTORY( world )
 
     private:
 
-        light::ptr _light = nullptr;
-        std::vector<shape::ptr> _objects;
+        light_ptr _light = nullptr;
+        std::vector<shape_ptr> _objects;
 
     };
+
+    intersections intersect( const world_ptr& s, const ray& r );
 }

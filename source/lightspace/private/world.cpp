@@ -1,7 +1,8 @@
 #include "world.hpp"
+#include "lights.hpp"
 
 namespace ls {
-    bool world::contains( const shape::ptr& s ) const
+    bool world::contains( const shape_ptr& s ) const
     {
         for ( const auto& object : _objects )
         {
@@ -13,7 +14,7 @@ namespace ls {
         return false;
     }
 
-     world::ptr world::create_default() noexcept
+    world_ptr world::create_default() noexcept
     {
         auto w = world::create();
         w->_light = point_light::create( f_color( 1, 1, 1 ), f_point( -10, 10, -10 ) );
@@ -24,5 +25,24 @@ namespace ls {
         s->set_transform( transform::scale( 0.5f, 0.5f, 0.5f ) );
         w->_objects.push_back( s );
         return w;
+    }
+
+    f_color world::shade_hit( const intersection_state& state )
+    {
+        return phong_lighting( state.object->material(), _light, state.point, state.eye, state.normal );
+    }
+
+    intersections intersect( const world_ptr& w, const ray& r )
+    {
+        intersections itrs;
+        for ( const shape_ptr& object : w->objects() )
+        {
+            auto object_itrs = intersect( object, r );
+            itrs.insert( itrs.end(), object_itrs.begin(), object_itrs.end() );
+        }
+        std::sort( itrs.begin(), itrs.end(), [] ( intersection i1, intersection i2 ) {
+            return i1.time() < i2.time();
+        } );
+        return itrs;
     }
 }

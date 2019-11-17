@@ -9,10 +9,6 @@ namespace ls {
     {
     public:
 
-        using ptr = std::shared_ptr<light>;
-
-    public:
-
         light( const f_color& intensity, const f_point& position ) :
             _intensity( intensity ), _position( position )
         { }
@@ -44,11 +40,7 @@ namespace ls {
             return _intensity == rhs._intensity && _position == rhs._position;
         }
 
-        template<typename... Ts>
-        static ptr create( Ts&&... args ) noexcept
-        {
-            return ptr( new shape( std::forward<Ts>( args ) ) );
-        }
+        PTR_FACTORY( light )
 
     private:
 
@@ -61,21 +53,13 @@ namespace ls {
     {
     public:
 
-        using ptr = std::shared_ptr<point_light>;
-
-    public:
-
         point_light( const f_color& intensity, const f_point& position ) :
             light( intensity, position )
         { }
 
-        template<typename... Ts>
-        static ptr create( Ts&&... args ) noexcept
-        {
-            return ptr( new point_light( std::forward<Ts>( args )... ) );
-        }
+        PTR_FACTORY( point_light )
 
     };
 
-    f_color phong_lighting( const phong_material& mat, const light& l, const f_point& position, const f_vector& eye, const f_vector& normal );
+    f_color phong_lighting( const phong_material& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal );
 }
