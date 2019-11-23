@@ -1,5 +1,6 @@
 #include "world.hpp"
 #include "lights.hpp"
+#include "ray.hpp"
 
 namespace ls {
     bool world::contains( const shape_ptr& s ) const
@@ -30,6 +31,18 @@ namespace ls {
     f_color world::shade_hit( const intersection_state& state )
     {
         return phong_lighting( state.object->material(), _light, state.point, state.eye, state.normal );
+    }
+
+    f_color world::color_at( const ray& r )
+    {
+        auto itrs = intersect( shared_from_this(), r );
+        auto h = hit( itrs );
+        if ( h == intersection::none )
+        {
+            return f_color( 0, 0, 0 );
+        }
+        auto state = prepare_intersection_state( h, r );
+        return shade_hit( state );
     }
 
     intersections intersect( const world_ptr& w, const ray& r )

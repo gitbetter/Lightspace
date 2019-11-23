@@ -8,7 +8,7 @@
 #include "intersection.hpp"
 
 namespace ls {
-    class world
+    class world : public std::enable_shared_from_this<world>
     {
     public:
 
@@ -32,6 +32,8 @@ namespace ls {
         static world_ptr create_default() noexcept;
 
         f_color shade_hit( const intersection_state& state );
+
+        f_color color_at( const ray& r );
 
         PTR_FACTORY( world )
 

@@ -76,5 +76,20 @@ namespace ls {
             };
             return mat;
         }
+
+        template<typename T>
+        const matrix<T, 4, 4> view( const point<T>& from, const point<T>& to, const vector<T>& up )
+        {
+            auto forward = ( to - from ).normalized();
+            auto left = forward.cross( up.normalized() );
+            auto true_up = left.cross( forward );
+            matrix<T, 4, 4> orientation{
+                left.x, left.y, left.z, 0.f,
+                true_up.x, true_up.y, true_up.z, 0.f,
+                -forward.x, -forward.y, -forward.z, 0.f,
+                0.f, 0.f, 0.f, 1.f
+            };
+            return orientation * translation( -from.x, -from.y, -from.z );
+        }
     }
 }

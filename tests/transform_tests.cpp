@@ -178,4 +178,50 @@ TEST_CASE( "Transform processing", "[transforms]" )
 
         REQUIRE( tfm * p == f_point( 15, 0, 7 ) );
     }
+
+    SECTION( "The transformation matrix for the default orientation" )
+    {
+        auto from = f_point( 0, 0, 0 );
+        auto to = f_point( 0, 0, -1 );
+        auto up = f_vector( 0, 1, 0 );
+        auto t = transform::view( from, to, up );
+
+        REQUIRE( t == f4_matrix::identity() );
+    }
+
+    SECTION( "A view transformation matrix looking in the positive z direction" )
+    {
+        auto from = f_point( 0, 0, 0 );
+        auto to = f_point( 0, 0, 1 );
+        auto up = f_vector( 0, 1, 0 );
+        auto t = transform::view( from, to, up );
+
+        REQUIRE( t == transform::scale( -1.f, 1.f, -1.f ) );
+    }
+
+    SECTION( "The view transformation moves the world" )
+    {
+        auto from = f_point( 0, 0, 8 );
+        auto to = f_point( 0, 0, 1 );
+        auto up = f_vector( 0, 1, 0 );
+        auto t = transform::view( from, to, up );
+
+        REQUIRE( t == transform::translation( 0.f, 0.f, -8.f ) );
+    }
+
+    SECTION( "An arbitrary view transformation" )
+    {
+        auto from = f_point( 1, 3, 2 );
+        auto to = f_point( 4, -2, 8 );
+        auto up = f_vector( 1, 1, 0 );
+        auto t = transform::view( from, to, up );
+        auto result = f4_matrix( {
+            -0.50709f, 0.50709f, 0.67612f, -2.36643f,
+            0.76772f, 0.60609f, 0.12122f, -2.82843f,
+            -0.35857f, 0.59761f, -0.71714f, 0.f,
+            0.f, 0.f, 0.f, 1.f
+                                 } );
+
+        REQUIRE( t == result );
+    }
 };

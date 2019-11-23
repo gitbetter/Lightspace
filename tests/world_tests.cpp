@@ -71,4 +71,39 @@ TEST_CASE( "World processing", "[world]" )
 
         REQUIRE( c == f_color( 0.90498f, 0.90498f, 0.90498f ) );
     }
+
+    SECTION( "The color when a ray misses" )
+    {
+        auto w = world::create_default();
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 1, 0 ) );
+        auto c = w->color_at( r );
+
+        REQUIRE( c == f_color( 0, 0, 0 ) );
+    }
+
+    SECTION( "The color when a ray hits" )
+    {
+        auto w = world::create_default();
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto c = w->color_at( r );
+
+        REQUIRE( c == f_color( 0.38066f, 0.47583f, 0.2855f ) );
+    }
+
+    SECTION( "The color with an intersection behind the ray" )
+    {
+        auto w = world::create_default();
+        auto outer = w->objects()[0];
+        auto m = outer->material();
+        m.ambient = 1;
+        outer->set_material( m );
+        auto inner = w->objects()[1];
+        m = inner->material();
+        m.ambient = 1;
+        inner->set_material( m );
+        auto r = ray( f_point( 0, 0, 0.75f ), f_vector( 0, 0, -1 ) );
+        auto c = w->color_at( r );
+
+        REQUIRE( c == inner->material().surface_color );
+    }
 };
