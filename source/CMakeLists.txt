@@ -22,6 +22,8 @@ ${CORE_DIR}/public/materials.hpp
 ${CORE_DIR}/private/materials.cpp
 ${CORE_DIR}/public/world.hpp
 ${CORE_DIR}/private/world.cpp
+${CORE_DIR}/public/camera.hpp
+${CORE_DIR}/private/camera.cpp
 )
 
 set(CORE_INCLUDES

@@ -41,6 +41,7 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( light );
     DECLARE_SHARED_PTR_TYPE( point_light );
     DECLARE_SHARED_PTR_TYPE( phong_material );
+    DECLARE_SHARED_PTR_TYPE( camera );
 
     template<
         typename T,
