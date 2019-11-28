@@ -27,6 +27,10 @@ namespace ls {
             return _objects;
         }
 
+        void add_object( shape_ptr obj );
+
+        void remove_object( shape_ptr obj );
+
         bool contains( const shape_ptr& s ) const;
 
         static world_ptr create_default() noexcept;

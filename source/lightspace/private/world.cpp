@@ -3,6 +3,39 @@
 #include "ray.hpp"
 
 namespace ls {
+    void world::add_object( shape_ptr obj )
+    {
+        bool present = false;
+        for ( auto object : _objects )
+        {
+            if ( object == obj )
+            {
+                present = true;
+                break;
+            }
+        }
+        if ( !present )
+        {
+            _objects.push_back( obj );
+        }
+    }
+
+    void world::remove_object( shape_ptr obj )
+    {
+        auto it = _objects.begin();
+        for ( ; it != _objects.end(); it++ )
+        {
+            if ( *it == obj )
+            {
+                break;
+            }
+        }
+        if ( it != _objects.end() )
+        {
+            _objects.erase( it );
+        }
+    }
+
     bool world::contains( const shape_ptr& s ) const
     {
         for ( const auto& object : _objects )
