@@ -24,6 +24,8 @@ namespace ls {
             state.inside = false;
         }
 
+        state.shifted_point = state.point + ( state.normal * epsilon );
+
         return state;
     }
 

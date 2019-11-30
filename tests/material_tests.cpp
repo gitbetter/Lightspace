@@ -71,4 +71,15 @@ TEST_CASE( "Material processing", "[materials]" )
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 0.1f, 0.1f, 0.1f ) );
     }
+
+    SECTION( "Shading with the surface in shadow " )
+    {
+        auto m = phong_material();
+        auto p = f_point( 0, 0, 0 );
+        auto eye_v = f_vector( 0, 0, -1 );
+        auto normal_v = f_vector( 0, 0, -1 );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
+
+        REQUIRE( phong_lighting( m, light, p, eye_v, normal_v, true ) == f_color( 0.1f, 0.1f, 0.1f ) );
+    }
 };

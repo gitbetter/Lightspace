@@ -1,12 +1,18 @@
 #include "lights.hpp"
 
 namespace ls {
-    f_color phong_lighting( const phong_material& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal )
+    f_color phong_lighting( const phong_material& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal, bool in_shadow )
     {
         auto effective_color = mat.surface_color * l->intensity();
         auto light_v = ( l->position() - position ).normalized();
 
         auto ambient = effective_color * mat.ambient;
+
+        if ( in_shadow )
+        {
+            return ambient;
+        }
+
         auto diffuse = f_color( 0, 0, 0 );
         auto specular = f_color( 0, 0, 0 );
 

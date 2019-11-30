@@ -39,6 +39,8 @@ namespace ls {
 
         f_color color_at( const ray& r );
 
+        bool in_shadow( const f_point& p );
+
         PTR_FACTORY( world )
 
     private:

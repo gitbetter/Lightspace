@@ -144,15 +144,15 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
     floor->set_material( floor_mat );
 
     auto left_wall = ls::sphere::create();
-    left_wall->set_transform( ls::transform::translation( 0.f, 0.f, 0.5f ) * 
-                              ls::transform::rotation_y( -ls::pi_over_4 ) * ls::transform::rotation_x( ls::pi_over_2 ) * 
-                              ls::transform::scale( 10.f, 0.01f, 10.f ) );
+    left_wall->set_transform( ls::transform::scale( 10.f, 0.01f, 10.f ) *
+                              ls::transform::rotation_y( -ls::pi_over_4 ) * ls::transform::rotation_x( ls::pi_over_2 ) *
+                              ls::transform::translation( 0.f, 0.f, 5.f ) );
     left_wall->set_material( floor_mat );
 
     auto right_wall = ls::sphere::create();
-    right_wall->set_transform( ls::transform::translation( 0.f, 0.f, 0.5f ) * 
-                               ls::transform::rotation_y( ls::pi_over_4 ) * ls::transform::rotation_x( ls::pi_over_2 ) * 
-                               ls::transform::scale( 10.f, 0.01f, 10.f ) );
+    right_wall->set_transform( ls::transform::scale( 10.f, 0.01f, 10.f ) *
+                               ls::transform::rotation_y( ls::pi_over_4 ) * ls::transform::rotation_x( ls::pi_over_2 ) *
+                               ls::transform::translation( 0.f, 0.f, 5.f ) );
     right_wall->set_material( floor_mat );
 
     auto middle_sphere = ls::sphere::create();
@@ -164,8 +164,8 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
     middle_sphere->set_material( middle_sphere_mat );
 
     auto right_sphere = ls::sphere::create();
-    right_sphere->set_transform( ls::transform::translation( 1.5f, 0.5f, -0.5f ) * 
-                                 ls::transform::scale( 0.5f, 0.5f, 0.5f ) );
+    right_sphere->set_transform( ls::transform::scale( 0.5f, 0.5f, 0.5f ) *
+                                 ls::transform::translation( 1.5f, 0.5f, -0.5f ) );
     auto right_sphere_mat = ls::phong_material();
     right_sphere_mat.surface_color = ls::f_color( 0.5f, 1.f, 0.1f );
     right_sphere_mat.diffuse = 0.7f;
@@ -173,15 +173,15 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
     right_sphere->set_material( right_sphere_mat );
 
     auto left_sphere = ls::sphere::create();
-    left_sphere->set_transform( ls::transform::translation( -1.5f, 0.33f, -0.75f ) *
-                                 ls::transform::scale( 0.33f, 0.33f, 0.33f ) );
+    left_sphere->set_transform( ls::transform::scale( 0.33f, 0.33f, 0.33f ) *
+                                ls::transform::translation( -1.5f, 0.33f, -0.75f ) );
     auto left_sphere_mat = ls::phong_material();
     left_sphere_mat.surface_color = ls::f_color( 1.f, 0.8f, 0.1f );
     left_sphere_mat.diffuse = 0.7f;
     left_sphere_mat.specular = 0.3f;
     left_sphere->set_material( left_sphere_mat );
 
-    auto light = ls::point_light::create( ls::f_color( 1.f, 1.f, 1.f ), ls::f_point( -10.f, 10.f, -10.f ) );
+    auto light = ls::point_light::create( ls::f_color( 1, 1, 1 ), ls::f_point( -10, 10, -10 ) );
 
     auto w = ls::world::create();
 
@@ -194,7 +194,7 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
     w->set_light( light );
 
     auto cam = ls::camera::create( x_res, y_res, ls::pi_over_3 );
-    cam->set_transform( ls::transform::view( ls::f_point( 0.f, 1.5f, -5.f ), ls::f_point( 0.f, 1.f, 0.f ), ls::f_vector( 0.f, 1.f, 0.f ) ) );
+    cam->set_transform( ls::transform::view( ls::f_point( 0, 1.5f, -5 ), ls::f_point( 0, 1, 0 ), ls::f_vector( 0, 1, 0 ) ) );
 
     auto canv = cam->render( w );
     
@@ -204,7 +204,7 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
 
 int main( int argc, char* argv[] )
 {
-    uint16_t canvas_width = 300, canvas_height = 300;
+    uint16_t canvas_width = 100, canvas_height = 50;
 
     // 1. The projectile sample runs a basic physics projectile launch simulation
     // and draws a small dot every frame showing where the projectile is, outputting

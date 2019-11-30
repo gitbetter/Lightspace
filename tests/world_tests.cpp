@@ -106,4 +106,67 @@ TEST_CASE( "World processing", "[world]" )
 
         REQUIRE( c == inner->material().surface_color );
     }
+
+    SECTION( "There is no shadow when nothing is collinear with the the point and the light" )
+    {
+        auto w = world::create_default();
+        auto p = f_point( 0, 10, 0 );
+
+        REQUIRE( !w->in_shadow( p ) );
+    }
+
+    SECTION( "The shadow when an object is between the point and the light" )
+    {
+        auto w = world::create_default();
+        auto p = f_point( 10, -10, 10 );
+
+        REQUIRE( w->in_shadow( p ) );
+    }
+    
+    SECTION( "There is no shadow when an object is behind the light" )
+    {
+        auto w = world::create_default();
+        auto p = f_point( -20, 20, -20 );
+
+        REQUIRE( !w->in_shadow( p ) );
+    }
+
+    SECTION( "There is no shadow when an object is behind the point" )
+    {
+        auto w = world::create_default();
+        auto p = f_point( -2, 2, -2 );
+
+        REQUIRE( !w->in_shadow( p ) );
+    }
+
+    SECTION( "shade_hit() is given an intersection in shadow" )
+    {
+        auto w = world::create();
+        auto l = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
+        w->set_light( l );
+        auto s1 = sphere::create();
+        w->add_object( s1 );
+        auto s2 = sphere::create();
+        s2->set_transform( transform::translation( 0.f, 0.f, 10.f ) );
+        w->add_object( s2 );
+
+        auto r = ray( f_point( 0, 0, 5 ), f_vector( 0, 0, 1 ) );
+        auto i = intersection( 4, s2 );
+        auto state = prepare_intersection_state( i, r );
+        auto c = w->shade_hit( state );
+
+        REQUIRE( c == f_color( 0.1f, 0.1f, 0.1f ) );
+    }
+
+    SECTION( "The hit should offset the point" )
+    {
+        auto r = ray( f_point( 0, 0, -5 ), f_point( 0, 0, 1 ) );
+        auto s = sphere::create();
+        s->set_transform( transform::translation( 0.f, 0.f, 1.f ) );
+        auto i = intersection( 5, s );
+        auto state = prepare_intersection_state( i, r );
+        
+        REQUIRE( state.shifted_point.z < -( epsilon * 0.5f ) );
+        REQUIRE( state.point.z > state.shifted_point.z );
+    }
 };

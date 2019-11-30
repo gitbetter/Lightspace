@@ -63,7 +63,8 @@ namespace ls {
 
     f_color world::shade_hit( const intersection_state& state )
     {
-        return phong_lighting( state.object->material(), _light, state.point, state.eye, state.normal );
+        auto shadowed = in_shadow( state.shifted_point );
+        return phong_lighting( state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
     }
 
     f_color world::color_at( const ray& r )
@@ -76,6 +77,19 @@ namespace ls {
         }
         auto state = prepare_intersection_state( h, r );
         return shade_hit( state );
+    }
+
+    bool world::in_shadow( const f_point& p )
+    {
+        auto to_light = _light->position() - p;
+        auto dist = to_light.length();
+        auto dir = to_light.normalized();
+
+        auto r = ray( p, dir );
+        auto itrs = intersect( shared_from_this(), r );
+        auto h = hit( itrs );
+
+        return h != intersection::none && h.time() < dist;
     }
 
     intersections intersect( const world_ptr& w, const ray& r )

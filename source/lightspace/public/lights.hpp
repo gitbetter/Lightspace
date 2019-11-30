@@ -61,5 +61,5 @@ namespace ls {
 
     };
 
-    f_color phong_lighting( const phong_material& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal );
+    f_color phong_lighting( const phong_material& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal, bool in_shadow = false );
 }

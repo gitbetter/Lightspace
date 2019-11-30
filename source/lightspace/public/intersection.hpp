@@ -56,13 +56,14 @@ namespace ls {
         fpnum time;
         shape_ptr object;
         f_point point;
+        f_point shifted_point;
         f_vector eye;
         f_vector normal;
         bool inside;
 
         intersection_state() :
-            time( 0 ), object( nullptr ), point( f_point(0, 0, 0) ), eye( f_vector( 0, 0, 0 ) ), 
-            normal( f_vector( 0, 0, 0 ) ), inside( false )
+            time( 0 ), object( nullptr ), point( f_point(0, 0, 0) ), shifted_point( f_point(0, 0, 0) ), 
+            eye( f_vector( 0, 0, 0 ) ), normal( f_vector( 0, 0, 0 ) ), inside( false )
         { }
     };
 
