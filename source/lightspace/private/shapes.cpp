@@ -3,6 +3,23 @@
 namespace ls {
     intersections intersect( const shape_ptr& s, const ray& r )
     {
+        auto sph = std::dynamic_pointer_cast<sphere>( s );
+        if ( sph )
+        {
+            return intersect( sph, r );
+        }
+
+        auto pln = std::dynamic_pointer_cast<plane>( s );
+        if ( pln )
+        {
+            return intersect( pln, r );
+        }
+
+        return intersections();
+    }
+
+    intersections intersect( const sphere_ptr& s, const ray& r )
+    {
         const ray transformed_ray = s->transform().inverse() * r;
 
         f_vector sphere_to_ray = transformed_ray.origin() - s->origin();
@@ -28,6 +45,18 @@ namespace ls {
         return intersections{
             intersection( ( -b - discriminant_sqrt ) * denom, s ),
             intersection( ( -b + discriminant_sqrt ) * denom, s )
+        };
+    }
+
+    intersections intersect( const plane_ptr& p, const ray& r )
+    {
+        if ( abs( r.direction().y ) < epsilon )
+        {
+            return intersections();
+        }
+
+        return intersections{
+            intersection( -r.origin().y / r.direction().y, p )
         };
     }
 }

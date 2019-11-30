@@ -69,6 +69,8 @@ namespace ls {
 
     };
 
+    intersections intersect( const shape_ptr& s, const ray& r );
+
     class sphere : public shape
     {
     public:
@@ -111,5 +113,23 @@ namespace ls {
 
     };
 
-    intersections intersect( const shape_ptr& s, const ray& r );
+    intersections intersect( const sphere_ptr& s, const ray& r );
+
+    class plane : public shape
+    {
+    public:
+
+        plane() : shape()
+        { }
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
+        {
+            auto ws_normal = _transform.inverse().transpose() * f_vector( 0, 1, 0 );
+            return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+        }
+
+        PTR_FACTORY( plane )
+    };
+
+    intersections intersect( const plane_ptr& p, const ray& r );
 }
