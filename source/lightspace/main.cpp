@@ -106,9 +106,9 @@ void run_simple_sphere_sample( uint16_t x_res, uint16_t y_res )
     auto ray_origin = ls::f_point( 0, 0, -5 );
     auto scene_light = ls::point_light::create( ls::f_color( 1, 1, 1 ), ls::f_point( 10, 10, -10 ) );
 
-    auto mat = ls::phong_material();
-    mat.surface_color = ls::f_color( 1.f, 0.65f, 0.3f );
-    mat.shininess = 125.f;
+    auto mat = ls::phong_material::create();
+    mat->surface_color = ls::f_color( 1.f, 0.65f, 0.3f );
+    mat->shininess = 125.f;
     sph->set_material( mat );
 
     for ( auto i = 0; i < canv.width(); i++ )
@@ -138,35 +138,35 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
 {
     auto floor = ls::plane::create();
     floor->set_transform( ls::transform::scale( 10.f, 0.01f, 10.f ) );
-    auto floor_mat = ls::phong_material();
-    floor_mat.surface_color = ls::f_color( 1.f, 0.9f, 0.9f );
-    floor_mat.specular = 0.f;
+    auto floor_mat = ls::phong_material::create();
+    floor_mat->surface_color = ls::f_color( 1.f, 0.9f, 0.9f );
+    floor_mat->specular = 0.f;
     floor->set_material( floor_mat );
 
     auto middle_sphere = ls::sphere::create();
     middle_sphere->set_transform( ls::transform::translation( -0.5f, 1.1f, 0.5f ) );
-    auto middle_sphere_mat = ls::phong_material();
-    middle_sphere_mat.surface_color = ls::f_color( 0.1f, 1.f, 0.5f );
-    middle_sphere_mat.diffuse = 0.7f;
-    middle_sphere_mat.specular = 0.3f;
+    auto middle_sphere_mat = ls::phong_material::create();
+    middle_sphere_mat->surface_color = ls::f_color( 0.1f, 1.f, 0.5f );
+    middle_sphere_mat->diffuse = 0.7f;
+    middle_sphere_mat->specular = 0.3f;
     middle_sphere->set_material( middle_sphere_mat );
 
     auto right_sphere = ls::sphere::create();
     right_sphere->set_transform( ls::transform::scale( 0.5f, 0.5f, 0.5f ) *
                                  ls::transform::translation( 1.5f, 0.6f, -0.5f ) );
-    auto right_sphere_mat = ls::phong_material();
-    right_sphere_mat.surface_color = ls::f_color( 0.5f, 1.f, 0.1f );
-    right_sphere_mat.diffuse = 0.7f;
-    right_sphere_mat.specular = 0.3f;
+    auto right_sphere_mat = ls::phong_material::create();
+    right_sphere_mat->surface_color = ls::f_color( 0.5f, 1.f, 0.1f );
+    right_sphere_mat->diffuse = 0.7f;
+    right_sphere_mat->specular = 0.3f;
     right_sphere->set_material( right_sphere_mat );
 
     auto left_sphere = ls::sphere::create();
     left_sphere->set_transform( ls::transform::scale( 0.33f, 0.33f, 0.33f ) *
                                 ls::transform::translation( -1.5f, 0.43f, -0.75f ) );
-    auto left_sphere_mat = ls::phong_material();
-    left_sphere_mat.surface_color = ls::f_color( 1.f, 0.8f, 0.1f );
-    left_sphere_mat.diffuse = 0.7f;
-    left_sphere_mat.specular = 0.3f;
+    auto left_sphere_mat = ls::phong_material::create();
+    left_sphere_mat->surface_color = ls::f_color( 1.f, 0.8f, 0.1f );
+    left_sphere_mat->diffuse = 0.7f;
+    left_sphere_mat->specular = 0.3f;
     left_sphere->set_material( left_sphere_mat );
 
     auto light = ls::point_light::create( ls::f_color( 1, 1, 1 ), ls::f_point( -10, 10, -10 ) );

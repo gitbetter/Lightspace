@@ -11,10 +11,10 @@ namespace ls {
     public:
 
         shape() :
-            _origin( f_point( 0, 0, 0 ) ), _id( get_uid() ), _transform( f4_matrix::identity() )
+            _origin( f_point( 0, 0, 0 ) ), _id( get_uid() ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
         { }
         explicit shape( const f_point& o ) :
-            _origin( o ), _id( get_uid() ), _transform( f4_matrix::identity() )
+            _origin( o ), _id( get_uid() ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
         { }
         virtual ~shape() { }
 
@@ -33,12 +33,12 @@ namespace ls {
             _transform = t;
         }
 
-        const phong_material& material() const noexcept
+        const phong_material_ptr& material() const noexcept
         {
             return _mat;
         }
 
-        void set_material( const phong_material& mat ) noexcept
+        void set_material( const phong_material_ptr& mat ) noexcept
         {
             _mat = mat;
         }
@@ -50,7 +50,7 @@ namespace ls {
 
         virtual bool identical_to( const shape_ptr other ) const noexcept
         {
-            return other && _origin == other->_origin && _transform == other->_transform && _mat == other->_mat;
+            return other && _origin == other->_origin && _transform == other->_transform && *_mat == *( other->_mat );
         }
 
         bool operator==( const shape& rhs ) const noexcept
@@ -65,7 +65,7 @@ namespace ls {
         uint32_t _id;
         f_point _origin;
         f4_matrix _transform;
-        phong_material _mat;
+        phong_material_ptr _mat;
 
     };
 

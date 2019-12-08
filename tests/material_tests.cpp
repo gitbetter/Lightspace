@@ -19,7 +19,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the eye between the light and the surface" )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
@@ -30,7 +30,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the eye between the light and the surface with eye offset by 45 degrees" )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0.70710678f, -0.70710678f );
         auto normal_v = f_vector( 0, 0, -1 );
@@ -41,7 +41,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the eye opposite the surface and the light offset by 45 degrees" )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
@@ -52,7 +52,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the eye in the path of the reflection vector" )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, -0.70710678f, -0.70710678f );
         auto normal_v = f_vector( 0, 0, -1 );
@@ -63,7 +63,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the light behind the surface" )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );
@@ -74,7 +74,7 @@ TEST_CASE( "Material processing", "[materials]" )
 
     SECTION( "Shading with the surface in shadow " )
     {
-        auto m = phong_material();
+        auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
         auto eye_v = f_vector( 0, 0, -1 );
         auto normal_v = f_vector( 0, 0, -1 );

@@ -179,16 +179,16 @@ TEST_CASE( "Sphere processing", "[spheres]" )
     {
         auto s = sphere::create();
 
-        REQUIRE( s->material() == phong_material() );
+        REQUIRE( *( s->material() ) == phong_material() );
     }
 
     SECTION( "A sphere may be assigned a material" )
     {
         auto s = sphere::create();
-        auto m = phong_material();
-        m.ambient = 1.f;
+        auto m = phong_material::create();
+        m->ambient = 1.f;
         s->set_material( m );
 
-        REQUIRE( s->material() == m );
+        REQUIRE( *( s->material() ) == *m );
     }
 };

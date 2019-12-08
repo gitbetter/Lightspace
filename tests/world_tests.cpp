@@ -22,7 +22,7 @@ TEST_CASE( "World processing", "[world]" )
         auto w = world::create_default();
         auto light = point_light::create( f_color( 1, 1, 1 ), f_point( -10, 10, -10 ) );
         auto s1 = sphere::create(), s2 = sphere::create();
-        auto mat1 = phong_material( f_color( 0.8f, 1.f, 0.6f ), 0.1f, 0.7f, 0.2f );
+        auto mat1 = phong_material::create( f_color( 0.8f, 1.f, 0.6f ), 0.1f, 0.7f, 0.2f );
 
         s1->set_material( mat1 );
         s2->set_transform( transform::scale( 0.5f, 0.5f, 0.5f ) );
@@ -94,17 +94,13 @@ TEST_CASE( "World processing", "[world]" )
     {
         auto w = world::create_default();
         auto outer = w->objects()[0];
-        auto m = outer->material();
-        m.ambient = 1;
-        outer->set_material( m );
+        outer->material()->ambient = 1;
         auto inner = w->objects()[1];
-        m = inner->material();
-        m.ambient = 1;
-        inner->set_material( m );
+        inner->material()->ambient = 1;
         auto r = ray( f_point( 0, 0, 0.75f ), f_vector( 0, 0, -1 ) );
         auto c = w->color_at( r );
 
-        REQUIRE( c == inner->material().surface_color );
+        REQUIRE( c == inner->material()->surface_color );
     }
 
     SECTION( "There is no shadow when nothing is collinear with the the point and the light" )
