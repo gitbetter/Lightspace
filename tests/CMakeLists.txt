@@ -14,4 +14,5 @@ ${TESTS_DIR}/light_tests.cpp
 ${TESTS_DIR}/material_tests.cpp
 ${TESTS_DIR}/world_tests.cpp
 ${TESTS_DIR}/camera_tests.cpp
+${TESTS_DIR}/pattern_tests.cpp
 )

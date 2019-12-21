@@ -72,7 +72,7 @@ TEST_CASE( "Material processing", "[materials]" )
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v ) == f_color( 0.1f, 0.1f, 0.1f ) );
     }
 
-    SECTION( "Shading with the surface in shadow " )
+    SECTION( "Shading with the surface in shadow" )
     {
         auto m = phong_material::create();
         auto p = f_point( 0, 0, 0 );
@@ -81,5 +81,23 @@ TEST_CASE( "Material processing", "[materials]" )
         auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
 
         REQUIRE( phong_lighting( m, light, p, eye_v, normal_v, true ) == f_color( 0.1f, 0.1f, 0.1f ) );
+    }
+
+    SECTION( "Lighting with a pattern applied" )
+    {
+        auto m = phong_material::create();
+        m->surface_pattern = stripe_pattern( f_color( 1, 1, 1 ), f_color( 0, 0, 0 ) );
+        m->ambient = 1;
+        m->diffuse = 0;
+        m->specular = 0;
+        auto eye_v = f_vector( 0, 0, -1 );
+        auto normal_v = f_vector( 0, 0, -1 );
+        auto light = point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, -10 ) );
+
+        auto c1 = phong_lighting( m, light, f_point( 0.9f, 0, 0 ), eye_v, normal_v, false );
+        auto c2 = phong_lighting( m, light, f_point( 1.1f, 0, 0 ), eye_v, normal_v, false );
+
+        REQUIRE( c1 == f_color( 1, 1, 1 ) );
+        REQUIRE( c2 == f_color( 0, 0, 0 ) );
     }
 };

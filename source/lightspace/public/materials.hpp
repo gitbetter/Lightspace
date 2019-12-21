@@ -2,6 +2,7 @@
 
 #include "common.hpp"
 #include "tensor.hpp"
+#include "patterns.hpp"
 
 namespace ls {
     class material 
@@ -12,6 +13,7 @@ namespace ls {
     public:
 
         f_color surface_color;
+        stripe_pattern surface_pattern;
         fpnum ambient;
         fpnum diffuse;
         fpnum specular;
@@ -20,10 +22,13 @@ namespace ls {
     public:
 
         phong_material() :
-            surface_color( f_color( 1, 1, 1 ) ), ambient( 0.1f ), diffuse( 0.9f ), specular( 0.9f ), shininess( 200.f )
+            surface_color( f_color( 1, 1, 1 ) ), surface_pattern( stripe_pattern::none ), ambient( 0.1f ), diffuse( 0.9f ), specular( 0.9f ), shininess( 200.f )
         { }
         phong_material( const f_color& col, fpnum amb = 0.1f, fpnum diff = 0.9f, fpnum spec = 0.9f, fpnum shine = 200.f ) :
-            surface_color( col ), ambient( amb ), diffuse( diff ), specular( spec ), shininess( shine )
+            surface_color( col ), surface_pattern( stripe_pattern::none ), ambient( amb ), diffuse( diff ), specular( spec ), shininess( shine )
+        { }
+        phong_material( const stripe_pattern& patt, fpnum amb = 0.1f, fpnum diff = 0.9f, fpnum spec = 0.9f, fpnum shine = 200.f ) :
+            surface_pattern( patt ), ambient( amb ), diffuse( diff ), specular( spec ), shininess( shine )
         { }
 
         bool operator==( const phong_material& rhs ) const noexcept

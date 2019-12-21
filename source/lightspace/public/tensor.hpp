@@ -355,6 +355,10 @@ namespace ls
     {
     public:
 
+        color() :
+            tensor<T>( 0, 0, 0, 1 )
+        { }
+
         color( T r, T g, T b, T a ) :
             tensor<T>( r, g, b, a )
         { }

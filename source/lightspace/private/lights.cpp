@@ -3,7 +3,17 @@
 namespace ls {
     f_color phong_lighting( const phong_material_ptr& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal, bool in_shadow )
     {
-        auto effective_color = mat->surface_color * l->intensity();
+        f_color color;
+        if ( mat->surface_pattern != stripe_pattern::none )
+        {
+            color = mat->surface_pattern.stripe_at( position );
+        }
+        else
+        {
+            color = mat->surface_color;
+        }
+
+        auto effective_color = color * l->intensity();
         auto light_v = ( l->position() - position ).normalized();
 
         auto ambient = effective_color * mat->ambient;
