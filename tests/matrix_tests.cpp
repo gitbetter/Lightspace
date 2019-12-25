@@ -338,7 +338,6 @@ TEST_CASE( "Matrix processing", "[matrices]" )
             0.35897f, 0.35897f, 0.43590f, 0.92308f,
             -0.69231f, -0.69231f, -0.76923f, -1.92308f
         };
-        auto inv = m.inverse();
 
         REQUIRE( m.inverse() == inv_result );
     }
@@ -357,7 +356,6 @@ TEST_CASE( "Matrix processing", "[matrices]" )
             -0.02901f, -0.14630f, -0.10926f, 0.12963f,
             0.17778f, 0.06667f, -0.26667f, 0.33333f
         };
-        auto inv = m.inverse();
 
         REQUIRE( m.inverse() == inv_result );
     }

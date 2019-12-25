@@ -64,7 +64,7 @@ namespace ls {
     f_color world::shade_hit( const intersection_state& state )
     {
         auto shadowed = in_shadow( state.shifted_point );
-        return phong_lighting( state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
+        return phong_lighting( state.object, state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
     }
 
     f_color world::color_at( const ray& r )

@@ -125,7 +125,7 @@ void run_simple_sphere_sample( uint16_t x_res, uint16_t y_res )
                 auto pos = ray.position( hit.time() );
                 auto norm = hit.object()->normal( pos.x, pos.y, pos.z );
                 auto eye = -ray.direction();
-                auto pixel_color = ls::phong_lighting( hit.object()->material(), scene_light, pos, eye, norm );
+                auto pixel_color = ls::phong_lighting( hit.object(), hit.object()->material(), scene_light, pos, eye, norm );
                 canv.draw_pixel( i, j, pixel_color );
             }
         }

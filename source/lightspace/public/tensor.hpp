@@ -230,9 +230,9 @@ namespace ls
 
         const vector<T> cross( const vector<T>& other ) const
         {
-            return vector<T>( y * other.z - z * other.y,
-                              z * other.x - x * other.z,
-                              x * other.y - y * other.x );
+            return vector<T>( this->y * other.z - this->z * other.y,
+                              this->z * other.x - this->x * other.z,
+                              this->x * other.y - this->y * other.x );
         }
 
         const vector<T> reflect( const vector<T>& normal ) const
@@ -247,27 +247,27 @@ namespace ls
 
         const vector<T> operator+( const tensor<T>& rhs ) const noexcept
         {
-            return vector<T>( add( rhs ) );
+            return vector<T>( this->add( rhs ) );
         }
 
         const vector<T> operator-( const tensor<T>& rhs ) const noexcept
         {
-            return vector<T>( subtract( rhs ) );
+            return vector<T>( this->subtract( rhs ) );
         }
 
         const vector<T> operator-() const noexcept
         {
-            return vector<T>( negate() );
+            return vector<T>( this->negate() );
         }
 
         const vector<T> operator*( T s ) const noexcept
         {
-            return vector<T>( multiply( s ) );
+            return vector<T>( this->multiply( s ) );
         }
 
         const vector<T> operator/( const T& s ) const
         {
-            return vector<T>( divide( s ) );
+            return vector<T>( this->divide( s ) );
         }
 
     };
@@ -311,27 +311,27 @@ namespace ls
 
         const point<T> operator+( const tensor<T>& rhs ) const noexcept
         {
-            return point<T>( add( rhs ) );
+            return point<T>( this->add( rhs ) );
         }
 
         const vector<T> operator-( const tensor<T>& rhs ) const noexcept
         {
-            return point<T>( subtract( rhs ) );
+            return point<T>( this->subtract( rhs ) );
         }
 
         const point<T> operator-() const noexcept
         {
-            return point<T>( negate() );
+            return point<T>( this->negate() );
         }
 
         const point<T> operator*( T s ) const noexcept
         {
-            return point<T>( multiply( s ) );
+            return point<T>( this->multiply( s ) );
         }
 
         const point<T> operator/( const T& s ) const
         {
-            return point<T>( divide( s ) );
+            return point<T>( this->divide( s ) );
         }
 
     };
@@ -383,42 +383,42 @@ namespace ls
 
         const color<T> operator+( const tensor<T>& rhs ) const noexcept
         {
-            auto col = add( rhs );
+            auto col = this->add( rhs );
             col.a = 1.f;
             return color<T>( col );
         }
 
         const color<T> operator-( const tensor<T>& rhs ) const noexcept
         {
-            auto col = subtract( rhs );
+            auto col = this->subtract( rhs );
             col.a = 1.f;
             return color<T>( col );
         }
 
         const color<T> operator-() const noexcept
         {
-            auto col = negate();
+            auto col = this->negate();
             col.a = 1.f;
             return color<T>( col );
         }
 
         const color<T> operator*( T s ) const noexcept
         {
-            auto col = multiply( s );
+            auto col = this->multiply( s );
             col.a = 1.f;
             return color<T>( col );
         }
 
         const color<T> operator*( const color<T>& rhs ) const noexcept
         {
-            auto col = hadamard_product( rhs );
+            auto col = this->hadamard_product( rhs );
             col.a = 1.f;
             return color<T>( col );
         }
 
         const color<T> operator/( const T& s ) const
         {
-            auto col = divide( s );
+            auto col = this->divide( s );
             col.a = 1.f;
             return color<T>( col );
         }

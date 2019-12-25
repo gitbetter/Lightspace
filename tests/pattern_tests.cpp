@@ -1,5 +1,7 @@
 #include "catch.hpp"
 #include "patterns.hpp"
+#include "shapes.hpp"
+#include "transform.hpp"
 
 using namespace ls;
 
@@ -50,4 +52,41 @@ TEST_CASE( "Pattern processing", "[pattern]" )
         REQUIRE( patt.stripe_at( f_point( -1, 0, 0 ) ) == white );
         REQUIRE( patt.stripe_at( f_point( -1.1f, 0, 0 ) ) == black );
     }
+    
+    SECTION( "Stripes with an object transformation" )
+    {
+        auto sph = sphere::create();
+        sph->set_transform( transform::scale( 2.f, 2.f, 2.f ) );
+        auto black = f_color( 0, 0, 0 );
+        auto white = f_color( 1, 1, 1 );
+        auto patt = stripe_pattern( white, black );
+        auto c = patt.stripe_at( sph, f_point( 1.5f, 0, 0 ) );
+
+        REQUIRE( c == white );
+    }
+    
+    SECTION( "Stripes with a pattern transformation" )
+    {
+        auto sph = sphere::create();
+        auto black = f_color( 0, 0, 0 );
+        auto white = f_color( 1, 1, 1 );
+        auto patt = stripe_pattern( white, black );
+        patt.set_transform( transform::scale( 2.f, 2.f, 2.f ) );
+        auto c = patt.stripe_at( sph, f_point( 1.5f, 0, 0 ) );
+
+        REQUIRE( c == white );
+    }
+    
+    SECTION( "Stripes with both an object and a pattern transformation" )
+     {
+         auto sph = sphere::create();
+         sph->set_transform( transform::scale( 2.f, 2.f, 2.f ) );
+         auto black = f_color( 0, 0, 0 );
+         auto white = f_color( 1, 1, 1 );
+         auto patt = stripe_pattern( white, black );
+         patt.set_transform( transform::translation( 0.5f, 0.f, 0.f ) );
+         auto c = patt.stripe_at( sph, f_point( 2.5f, 0, 0 ) );
+
+         REQUIRE( c == white );
+     }
 };

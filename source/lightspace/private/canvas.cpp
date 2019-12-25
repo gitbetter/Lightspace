@@ -82,7 +82,6 @@ namespace ls {
             for ( auto j = 0; j < _width; j++ )
             {
                 const f_color& pixel = _pixels[i][j];
-                uint16_t line_width = 0;
 
                 auto r = std::to_string( static_cast<unsigned int>( clamp( pixel.r * 256, 0.f, 255.f ) ) );
                 print_color_component( r );

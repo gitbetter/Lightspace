@@ -61,7 +61,7 @@ namespace ls {
 
     inline uint32_t get_uid() noexcept
     {
-        static std::atomic_uint32_t current_uid = 0;
+        static std::atomic_uint32_t current_uid{0};
         return ++current_uid;
     }
 

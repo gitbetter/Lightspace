@@ -11,10 +11,10 @@ namespace ls {
     public:
 
         shape() :
-            _origin( f_point( 0, 0, 0 ) ), _id( get_uid() ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
+            _id( get_uid() ), _origin( f_point( 0, 0, 0 ) ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
         { }
         explicit shape( const f_point& o ) :
-            _origin( o ), _id( get_uid() ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
+            _id( get_uid() ), _origin( o ), _transform( f4_matrix::identity() ), _mat( phong_material::create() )
         { }
         virtual ~shape() { }
 
