@@ -87,7 +87,7 @@ TEST_CASE( "Material processing", "[materials]" )
     SECTION( "Lighting with a pattern applied" )
     {
         auto m = phong_material::create();
-        m->surface_pattern = stripe_pattern( f_color( 1, 1, 1 ), f_color( 0, 0, 0 ) );
+        m->surface_pattern = stripe_pattern::create( f_color( 1, 1, 1 ), f_color( 0, 0, 0 ) );
         m->ambient = 1;
         m->diffuse = 0;
         m->specular = 0;

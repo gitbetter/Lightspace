@@ -43,6 +43,8 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( phong_material );
     DECLARE_SHARED_PTR_TYPE( camera );
     DECLARE_SHARED_PTR_TYPE( plane );
+    DECLARE_SHARED_PTR_TYPE( pattern );
+    DECLARE_SHARED_PTR_TYPE( stripe_pattern );
 
     template<
         typename T,

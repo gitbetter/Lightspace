@@ -4,9 +4,9 @@ namespace ls {
     f_color phong_lighting( const shape_ptr obj, const phong_material_ptr& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal, bool in_shadow )
     {
         f_color color;
-        if ( mat->surface_pattern != stripe_pattern::none )
+        if ( mat->surface_pattern )
         {
-            color = mat->surface_pattern.stripe_at( obj, position );
+            color = mat->surface_pattern->color_at( obj, position );
         }
         else
         {
