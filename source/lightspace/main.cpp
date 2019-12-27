@@ -11,6 +11,7 @@
 #include "lights.hpp"
 #include "world.hpp"
 #include "camera.hpp"
+#include "patterns.hpp"
 
 using namespace std;
 
@@ -137,9 +138,9 @@ void run_simple_sphere_sample( uint16_t x_res, uint16_t y_res )
 void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
 {
     auto floor = ls::plane::create();
-    floor->set_transform( ls::transform::scale( 10.f, 0.01f, 10.f ) );
+    floor->set_transform( ls::transform::scale( 10.f, 0.001f, 10.f ) );
     auto floor_mat = ls::phong_material::create();
-    floor_mat->surface_color = ls::f_color( 1.f, 0.9f, 0.9f );
+    floor_mat->surface_pattern = ls::checker_pattern::create( ls::f_color( 1, 1, 1 ), ls::f_color( 0, 0, 0 ) );
     floor_mat->specular = 0.f;
     floor->set_material( floor_mat );
 

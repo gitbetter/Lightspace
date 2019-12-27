@@ -45,6 +45,9 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( plane );
     DECLARE_SHARED_PTR_TYPE( pattern );
     DECLARE_SHARED_PTR_TYPE( stripe_pattern );
+    DECLARE_SHARED_PTR_TYPE( gradient_pattern );
+    DECLARE_SHARED_PTR_TYPE( ring_pattern );
+    DECLARE_SHARED_PTR_TYPE( checker_pattern );
 
     template<
         typename T,
