@@ -59,11 +59,12 @@ namespace ls {
         f_point shifted_point;
         f_vector eye;
         f_vector normal;
+        f_vector reflection;
         bool inside;
 
         intersection_state() :
             time( 0 ), object( nullptr ), point( f_point(0, 0, 0) ), shifted_point( f_point(0, 0, 0) ), 
-            eye( f_vector( 0, 0, 0 ) ), normal( f_vector( 0, 0, 0 ) ), inside( false )
+            eye( f_vector( 0, 0, 0 ) ), normal( f_vector( 0, 0, 0 ) ), reflection( f_vector( 0, 0, 0 ) ), inside( false )
         { }
     };
 

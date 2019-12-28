@@ -25,6 +25,7 @@ namespace ls {
         }
 
         state.shifted_point = state.point + ( state.normal * epsilon );
+        state.reflection = r.direction().reflect( state.normal );
 
         return state;
     }

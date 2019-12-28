@@ -212,6 +212,11 @@ namespace ls
         vector( const tensor<T>& t ) :
             tensor<T>( t.x, t.y, t.z, t.w )
         { }
+        
+        bool operator==( const vector<T>& rhs ) const noexcept
+        {
+            return this->equals( rhs );
+        }
 
         tensor_t is() const noexcept override
         {
@@ -298,6 +303,11 @@ namespace ls
         point( const tensor<T>& t ) :
             tensor<T>( t.x, t.y, t.z, t.w )
         { }
+        
+        bool operator==( const point<T>& rhs ) const noexcept
+        {
+            return this->equals( rhs );
+        }
 
         tensor_t is() const noexcept override
         {
@@ -370,6 +380,11 @@ namespace ls
         color( const tensor<T>& t ) :
             tensor<T>( t.r, t.g, t.b, t.a )
         { }
+        
+        bool operator==( const color<T>& rhs ) const noexcept
+        {
+            return this->equals( rhs );
+        }
 
         tensor_t is() const noexcept override
         {

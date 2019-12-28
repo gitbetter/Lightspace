@@ -11,7 +11,7 @@ TEST_CASE( "Material processing", "[materials]" )
     {
         auto m = phong_material();
 
-        REQUIRE( m.surface_color == f_color( 1, 1, 1 ) );
+        REQUIRE( m.surface_pattern->color_at( f_point( 0, 0, 0 ) ) == f_color( 1, 1, 1 ) );
         REQUIRE( m.ambient == 0.1f );
         REQUIRE( m.diffuse == 0.9f );
         REQUIRE( m.specular == 0.9f );
@@ -100,5 +100,12 @@ TEST_CASE( "Material processing", "[materials]" )
 
         REQUIRE( c1 == f_color( 1, 1, 1 ) );
         REQUIRE( c2 == f_color( 0, 0, 0 ) );
+    }
+    
+    SECTION( "Reflectivity for the default material" )
+    {
+        auto m = phong_material();
+        
+        REQUIRE( approx( m.reflectivity, 0.f ) );
     }
 };

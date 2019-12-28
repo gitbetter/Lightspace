@@ -35,6 +35,45 @@ namespace ls {
         
     };
 
+    class solid_pattern : public pattern
+    {
+    public:
+
+        using pattern::color_at;
+        
+        solid_pattern() :
+            pattern(), color_( f_color( 1, 1, 1 ) )
+        { }
+        
+        solid_pattern( const f_color& color ) :
+            pattern(), color_( color )
+        { }
+
+        const f_color color() const noexcept
+        {
+            return color_;
+        }
+
+        bool operator==( const solid_pattern& rhs ) const noexcept
+        {
+            return color_ == rhs.color_;
+        }
+
+        bool operator!=( const solid_pattern& rhs ) const noexcept
+        {
+            return !( color_ == rhs.color_ );
+        }
+
+        f_color color_at( const f_point& point ) const override;
+
+        PTR_FACTORY( solid_pattern )
+        
+    private:
+
+        f_color color_;
+
+    };
+
     class stripe_pattern : public pattern
     {
     public:

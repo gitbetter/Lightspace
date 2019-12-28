@@ -100,7 +100,7 @@ TEST_CASE( "World processing", "[world]" )
         auto r = ray( f_point( 0, 0, 0.75f ), f_vector( 0, 0, -1 ) );
         auto c = w->color_at( r );
 
-        REQUIRE( c == inner->material()->surface_color );
+        REQUIRE( c == inner->material()->surface_pattern->color_at( f_point( 0, 0, 0 ) ) );
     }
 
     SECTION( "There is no shadow when nothing is collinear with the the point and the light" )
@@ -156,7 +156,7 @@ TEST_CASE( "World processing", "[world]" )
 
     SECTION( "The hit should offset the point" )
     {
-        auto r = ray( f_point( 0, 0, -5 ), f_point( 0, 0, 1 ) );
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
         auto s = sphere::create();
         s->set_transform( transform::translation( 0.f, 0.f, 1.f ) );
         auto i = intersection( 5, s );
@@ -164,5 +164,81 @@ TEST_CASE( "World processing", "[world]" )
         
         REQUIRE( state.shifted_point.z < -( epsilon * 0.5f ) );
         REQUIRE( state.point.z > state.shifted_point.z );
+    }
+    
+    SECTION( "The reflected color for a non-reflective material" )
+    {
+        auto w = world::create_default();
+        auto r = ray( f_point( 0, 0, 0 ), f_vector( 0, 0, 1 ) );
+        auto sh = w->objects()[1];
+        sh->material()->ambient = 1.f;
+        auto i = intersection( 1, sh );
+        auto state = prepare_intersection_state( i, r );
+        auto colr = w->reflected_color( state );
+        
+        REQUIRE( colr == f_color( 0, 0, 0 ) );
+    }
+    
+    SECTION( "The reflected color for a reflective material" )
+    {
+        auto w = world::create_default();
+        auto pl = plane::create();
+        pl->material()->reflectivity = 0.5f;
+        pl->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        w->add_object( pl );
+        auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
+        auto i = intersection( 1.414214f, pl );
+        auto state = prepare_intersection_state( i, r );
+        auto colr = w->reflected_color( state );
+        
+        REQUIRE( colr == f_color( 0.19033f, 0.23791f, 0.14274f ) );
+    }
+    
+    SECTION( "shade_hit with a reflective material" )
+    {
+        auto w = world::create_default();
+        auto pl = plane::create();
+        pl->material()->reflectivity = 0.5f;
+        pl->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        w->add_object( pl );
+        auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
+        auto i = intersection( 1.414214f, pl );
+        auto state = prepare_intersection_state( i, r );
+        auto colr = w->shade_hit( state );
+        
+        REQUIRE( colr == f_color( 0.87675f, 0.92434f, 0.82917f ) );
+    }
+    
+    SECTION( "color_at with mutually reflective surfaces" )
+    {
+        auto w = world::create();
+        w->set_light( point_light::create( f_color( 1, 1, 1 ), f_point( 0, 0, 0 ) ) );
+        auto pl_lower = plane::create();
+        pl_lower->material()->reflectivity = 1.f;
+        pl_lower->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        w->add_object( pl_lower );
+        auto pl_upper = plane::create();
+        pl_upper->material()->reflectivity = 1.f;
+        pl_upper->set_transform( transform::translation( 0.f, 1.f, 0.f ) );
+        w->add_object( pl_upper );
+        auto r = ray( f_point( 0, 0, 0 ), f_vector( 0, 1, 0 ) );
+        auto colr = w->color_at( r );
+        
+        SUCCEED( );
+    }
+    
+    SECTION( "The reflective color at the maximum recursive depth" )
+    {
+        auto w = world::create_default();
+        auto pl = plane::create();
+        pl->material()->reflectivity = 0.5f;
+        pl->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        w->add_object( pl );
+        auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
+        auto i = intersection( 1.414214f, pl );
+        auto state = prepare_intersection_state( i, r );
+        auto colr = w->reflected_color( state, 0 );
+        
+        REQUIRE( colr == f_color( 0, 0, 0 ) );
     }
 };

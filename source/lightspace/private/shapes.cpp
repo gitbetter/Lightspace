@@ -50,13 +50,15 @@ namespace ls {
 
     intersections intersect( const plane_ptr& p, const ray& r )
     {
-        if ( abs( r.direction().y ) < epsilon )
+        const ray transformed_ray = p->transform().inverse() * r;
+        
+        if ( abs( transformed_ray.direction().y ) < epsilon )
         {
             return intersections();
         }
 
         return intersections{
-            intersection( -r.origin().y / r.direction().y, p )
+            intersection( -transformed_ray.origin().y / transformed_ray.direction().y, p )
         };
     }
 }

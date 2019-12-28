@@ -9,6 +9,11 @@ namespace ls {
         return color_at( patt_point );
     }
 
+    f_color solid_pattern::color_at( const f_point& point ) const
+    {
+        return color_;
+    }
+
     f_color stripe_pattern::color_at( const f_point& point ) const
     {
         return static_cast<int>( floor( point.x ) ) % 2 == 0 ? first_ : second_;

@@ -35,9 +35,11 @@ namespace ls {
 
         static world_ptr create_default() noexcept;
 
-        f_color shade_hit( const intersection_state& state );
+        f_color shade_hit( const intersection_state& state, uint8_t depth = 5 );
+        
+        f_color reflected_color( const intersection_state& state, uint8_t depth = 5);
 
-        f_color color_at( const ray& r );
+        f_color color_at( const ray& r, uint8_t depth = 5 );
 
         bool in_shadow( const f_point& p );
 

@@ -61,13 +61,25 @@ namespace ls {
         return w;
     }
 
-    f_color world::shade_hit( const intersection_state& state )
+    f_color world::shade_hit( const intersection_state& state, uint8_t depth )
     {
         auto shadowed = in_shadow( state.shifted_point );
-        return phong_lighting( state.object, state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
+        auto surface = phong_lighting( state.object, state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
+        auto reflected = reflected_color( state, depth );
+        return surface + reflected;
     }
 
-    f_color world::color_at( const ray& r )
+    f_color world::reflected_color( const intersection_state& state, uint8_t depth ) {
+        if ( approx( state.object->material()->reflectivity, 0.f ) || depth <= 0 )
+        {
+            return f_color( 0, 0, 0 );
+        }
+        auto reflected_ray = ray( state.shifted_point, state.reflection );
+        auto col = color_at( reflected_ray, depth - 1 );
+        return col * state.object->material()->reflectivity;
+    }
+
+    f_color world::color_at( const ray& r, uint8_t depth )
     {
         auto itrs = intersect( shared_from_this(), r );
         auto h = hit( itrs );
@@ -76,7 +88,7 @@ namespace ls {
             return f_color( 0, 0, 0 );
         }
         auto state = prepare_intersection_state( h, r );
-        return shade_hit( state );
+        return shade_hit( state, depth );
     }
 
     bool world::in_shadow( const f_point& p )

@@ -105,4 +105,14 @@ TEST_CASE( "Intersection processing", "[intersections]" )
         REQUIRE( istate.normal == f_vector( 0, 0, -1 ) );
         REQUIRE( istate.inside == true );
     }
+    
+    SECTION( "Precomputing the reflection vector" )
+    {
+        auto pl = plane::create();
+        auto r = ray( f_point( 0, 1, -1 ), f_vector( 0, -0.707106f, 0.707106f ) );
+        auto i = intersection( 1.414214f, pl );
+        auto state = prepare_intersection_state( i, r );
+        
+        REQUIRE( state.reflection == f_vector( 0, 0.707106f, 0.707106f ) );
+    }
 };

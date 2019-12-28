@@ -40,10 +40,12 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( world );
     DECLARE_SHARED_PTR_TYPE( light );
     DECLARE_SHARED_PTR_TYPE( point_light );
+    DECLARE_SHARED_PTR_TYPE( material );
     DECLARE_SHARED_PTR_TYPE( phong_material );
     DECLARE_SHARED_PTR_TYPE( camera );
     DECLARE_SHARED_PTR_TYPE( plane );
     DECLARE_SHARED_PTR_TYPE( pattern );
+    DECLARE_SHARED_PTR_TYPE( solid_pattern );
     DECLARE_SHARED_PTR_TYPE( stripe_pattern );
     DECLARE_SHARED_PTR_TYPE( gradient_pattern );
     DECLARE_SHARED_PTR_TYPE( ring_pattern );
