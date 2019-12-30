@@ -191,4 +191,13 @@ TEST_CASE( "Sphere processing", "[spheres]" )
 
         REQUIRE( *( s->material() ) == *m );
     }
+    
+    SECTION( "A helper function for producing a sphere with a glassy material" )
+    {
+        auto s = sphere::create_glassy();
+        
+        REQUIRE( s->transform() == f4_matrix::identity() );
+        REQUIRE( approx( s->material()->transparency, 1.f ) );
+        REQUIRE( approx( s->material()->refractive_index, 1.5f ) );
+    }
 };

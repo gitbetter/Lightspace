@@ -54,22 +54,25 @@ namespace ls {
     struct intersection_state
     {
         fpnum time;
+        fpnum ridx_from;
+        fpnum ridx_to;
         shape_ptr object;
         f_point point;
         f_point shifted_point;
+        f_point shifted_under_point;
         f_vector eye;
         f_vector normal;
         f_vector reflection;
         bool inside;
 
         intersection_state() :
-            time( 0 ), object( nullptr ), point( f_point(0, 0, 0) ), shifted_point( f_point(0, 0, 0) ), 
+            time( 0 ), object( nullptr ), point( f_point( 0, 0, 0 ) ), shifted_point( f_point( 0, 0, 0 ) ), shifted_under_point( f_point( 0, 0, 0 ) ),
             eye( f_vector( 0, 0, 0 ) ), normal( f_vector( 0, 0, 0 ) ), reflection( f_vector( 0, 0, 0 ) ), inside( false )
         { }
     };
 
     using intersections = std::vector<intersection>;
 
-    intersection_state prepare_intersection_state( const intersection& i, const ray& r );
+    intersection_state prepare_intersection_state( const intersection& i, const ray& r, const intersections& itrs = intersections() );
     intersection hit( const intersections& itrs );
 }

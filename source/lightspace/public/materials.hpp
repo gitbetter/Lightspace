@@ -11,14 +11,16 @@ namespace ls {
         
         pattern_ptr surface_pattern;
         fpnum reflectivity;
+        fpnum transparency;
+        fpnum refractive_index;
         
     public:
         
         material() :
-            surface_pattern( solid_pattern::create() ), reflectivity( 0.f )
+            surface_pattern( solid_pattern::create() ), reflectivity( 0.f ), transparency( 0.f ), refractive_index( 1.f )
         { }
         material( const pattern_ptr& patt ) :
-            surface_pattern( patt ), reflectivity( 0.f )
+            surface_pattern( patt ), reflectivity( 0.f ), transparency( 0.f ), refractive_index( 1.f )
         { }
         virtual ~material()
         { }

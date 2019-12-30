@@ -9,6 +9,11 @@ namespace ls {
         return color_at( patt_point );
     }
 
+    f_color test_pattern::color_at( const f_point& point ) const
+    {
+        return f_color( point.x, point.y, point.z );
+    }
+
     f_color solid_pattern::color_at( const f_point& point ) const
     {
         return color_;

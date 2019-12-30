@@ -37,7 +37,9 @@ namespace ls {
 
         f_color shade_hit( const intersection_state& state, uint8_t depth = 5 );
         
-        f_color reflected_color( const intersection_state& state, uint8_t depth = 5);
+        f_color reflected_color( const intersection_state& state, uint8_t depth = 5 );
+        
+        f_color refracted_color( const intersection_state& state, uint8_t depth = 5 );
 
         f_color color_at( const ray& r, uint8_t depth = 5 );
 

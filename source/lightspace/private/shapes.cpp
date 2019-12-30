@@ -18,6 +18,14 @@ namespace ls {
         return intersections();
     }
 
+    sphere_ptr sphere::create_glassy()
+    {
+        auto sph = sphere::create();
+        sph->material()->transparency = 1.f;
+        sph->material()->refractive_index = 1.5f;
+        return sph;
+    }
+
     intersections intersect( const sphere_ptr& s, const ray& r )
     {
         const ray transformed_ray = s->transform().inverse() * r;

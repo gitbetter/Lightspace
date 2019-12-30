@@ -35,6 +35,22 @@ namespace ls {
         
     };
 
+    class test_pattern : public pattern
+    {
+    public:
+        
+        using pattern::color_at;
+        
+        test_pattern() :
+            pattern()
+        { }
+
+        f_color color_at( const f_point& point ) const override;
+
+        PTR_FACTORY( test_pattern )
+        
+    };
+
     class solid_pattern : public pattern
     {
     public:

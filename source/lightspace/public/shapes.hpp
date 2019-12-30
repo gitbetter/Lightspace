@@ -104,6 +104,8 @@ namespace ls {
             }
             return _radius == other_sphere->_radius && shape::identical_to( other );
         }
+        
+        static sphere_ptr create_glassy();
 
         PTR_FACTORY( sphere )
 

@@ -5,7 +5,7 @@
 namespace ls {
     const intersection intersection::none = intersection();
 
-    intersection_state prepare_intersection_state( const intersection& i, const ray& r )
+    intersection_state prepare_intersection_state( const intersection& i, const ray& r, const intersections& itrs )
     {
         intersection_state state;
         state.time = i.time();
@@ -25,7 +25,34 @@ namespace ls {
         }
 
         state.shifted_point = state.point + ( state.normal * epsilon );
+        state.shifted_under_point = state.point - ( state.normal * epsilon );
         state.reflection = r.direction().reflect( state.normal );
+        
+        std::vector<shape_ptr> shapes;
+        intersection h = hit( itrs );
+        for ( const intersection& i : itrs )
+        {
+            if ( i == h )
+            {
+                state.ridx_from = shapes.empty() ? 1.f : shapes.back()->material()->refractive_index;
+            }
+            
+            auto it = std::find( shapes.begin(), shapes.end(), i.object() );
+            if ( it != shapes.end() )
+            {
+                shapes.erase( it );
+            }
+            else
+            {
+                shapes.push_back( i.object() );
+            }
+            
+            if ( i == h )
+            {
+                state.ridx_to = shapes.empty() ? 1.f : shapes.back()->material()->refractive_index;
+                break;
+            }
+        }
 
         return state;
     }

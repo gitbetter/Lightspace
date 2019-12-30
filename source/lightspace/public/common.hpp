@@ -45,6 +45,7 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( camera );
     DECLARE_SHARED_PTR_TYPE( plane );
     DECLARE_SHARED_PTR_TYPE( pattern );
+    DECLARE_SHARED_PTR_TYPE( test_pattern );
     DECLARE_SHARED_PTR_TYPE( solid_pattern );
     DECLARE_SHARED_PTR_TYPE( stripe_pattern );
     DECLARE_SHARED_PTR_TYPE( gradient_pattern );

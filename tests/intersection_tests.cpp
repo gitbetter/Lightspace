@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "shapes.hpp"
 #include "intersection.hpp"
+#include "transform.hpp"
 
 using namespace ls;
 
@@ -114,5 +115,44 @@ TEST_CASE( "Intersection processing", "[intersections]" )
         auto state = prepare_intersection_state( i, r );
         
         REQUIRE( state.reflection == f_vector( 0, 0.707106f, 0.707106f ) );
+    }
+    
+    SECTION( "Finding n1 and n2 at various intersections" )
+    {
+        auto a = sphere::create_glassy();
+        a->set_transform( transform::scale( 2.f, 2.f, 2.f ) );
+        a->material()->refractive_index = 1.5f;
+        auto b = sphere::create_glassy();
+        b->set_transform( transform::translation( 0.f, 0.f, -0.25f ) );
+        b->material()->refractive_index = 2.f;
+        auto c = sphere::create_glassy();
+        c->set_transform( transform::translation( 0.f, 0.f, 0.25f ) );
+        c->material()->refractive_index = 2.5f;
+        auto r = ray( f_point( 0, 0, -4 ), f_vector( 0, 0, 1 ) );
+        auto xs = intersections{
+            intersection( 2, a ),
+            intersection( 2.75f, b ),
+            intersection( 3.25f, c ),
+            intersection( 4.75f, b ),
+            intersection( 5.25f, c ),
+            intersection( 6, a )
+        };
+        auto state = prepare_intersection_state( xs[0], r, xs );
+        
+        REQUIRE( approx( state.ridx_from, 1.f ) );
+        REQUIRE( approx( state.ridx_to, 1.5f ) );
+    }
+    
+    SECTION( "The under point is offset below the surface" )
+    {
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto sh = sphere::create_glassy();
+        sh->set_transform( transform::translation( 0.f, 0.f, 1.f ) );
+        auto i = intersection( 5, sh );
+        auto itrs = intersections{ i };
+        auto state = prepare_intersection_state( i, r, itrs );
+        
+        REQUIRE( state.shifted_under_point.z > epsilon / 2 );
+        REQUIRE( state.point.z < state.shifted_under_point.z );
     }
 };

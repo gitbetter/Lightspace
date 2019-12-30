@@ -108,4 +108,12 @@ TEST_CASE( "Material processing", "[materials]" )
         
         REQUIRE( approx( m.reflectivity, 0.f ) );
     }
+    
+    SECTION( "Transparency and refractive index for the default material" )
+    {
+        auto m = phong_material();
+        
+        REQUIRE( approx( m.transparency, 0.f ) );
+        REQUIRE( approx( m.refractive_index, 1.f ) );
+    }
 };

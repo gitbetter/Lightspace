@@ -241,4 +241,98 @@ TEST_CASE( "World processing", "[world]" )
         
         REQUIRE( colr == f_color( 0, 0, 0 ) );
     }
+    
+    SECTION( "The refracted color with an opaque surface" )
+    {
+        auto w = world::create_default();
+        auto sh = w->objects()[0];
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto itrs = intersections{
+            intersection( 4, sh ),
+            intersection( 6, sh )
+        };
+        auto state = prepare_intersection_state( itrs[0], r, itrs );
+        auto c = w->refracted_color( state );
+        
+        REQUIRE( c == f_color( 0, 0, 0 ) );
+    }
+    
+    SECTION( "The refracted color at the maximum recursive depth" )
+    {
+        auto w = world::create_default();
+        auto sh = w->objects()[0];
+        sh->material()->transparency = 1.f;
+        sh->material()->refractive_index = 1.5f;
+        auto r = ray( f_point( 0, 0, -5 ), f_vector( 0, 0, 1 ) );
+        auto itrs = intersections{
+            intersection( 4, sh ),
+            intersection( 6, sh )
+        };
+        auto state = prepare_intersection_state( itrs[0], r, itrs );
+        auto c = w->refracted_color( state, 0 );
+        
+        REQUIRE( c == f_color( 0, 0, 0 ) );
+    }
+    
+    SECTION( "The refracted color under total internal reflection" )
+    {
+        auto w = world::create_default();
+        auto sh = w->objects()[0];
+        sh->material()->transparency = 1.f;
+        sh->material()->refractive_index = 1.5f;
+        auto r = ray( f_point( 0, 0, 0.7071067f ), f_vector( 0, 1, 0 ) );
+        auto itrs = intersections{
+            intersection( -0.7071067f, sh ),
+            intersection( 0.7071067f, sh )
+        };
+        auto state = prepare_intersection_state( itrs[1], r, itrs );
+        auto c = w->refracted_color( state );
+        
+        REQUIRE( c == f_color( 0, 0, 0 ) );
+    }
+    
+    SECTION( "The refracted color with a refracted ray" )
+    {
+        auto w = world::create_default();
+        auto a = w->objects()[0];
+        a->material()->ambient = 1.f;
+        a->material()->surface_pattern = test_pattern::create();
+        auto b = w->objects()[1];
+        b->material()->transparency = 1.f;
+        b->material()->refractive_index = 1.5f;
+        auto r = ray( f_point( 0, 0, 0.1f ), f_vector( 0, 1, 0 ) );
+        auto itrs = intersections{
+            intersection( -0.9899f, a ),
+            intersection( -0.4899f, b ),
+            intersection( 0.4899f, b ),
+            intersection( 0.9899f, a )
+        };
+        auto state = prepare_intersection_state( itrs[2], r, itrs );
+        auto c = w->refracted_color( state );
+        
+        REQUIRE( c == f_color( 0, 0.99887f, 0.04722f ) );
+    }
+    
+    SECTION( "shade_hit with a transparent material" )
+    {
+        auto w = world::create_default();
+        auto floor = plane::create();
+        floor->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        floor->material()->transparency = 0.5f;
+        floor->material()->refractive_index = 1.5f;
+        w->add_object( floor );
+        auto ball = sphere::create();
+        ball->material()->surface_pattern = solid_pattern::create( f_color( 1, 0, 0 ) );
+        ball->material()->ambient = 0.5f;
+        ball->set_transform( transform::translation( 0.f, -3.5f, -0.5f ) );
+        w->add_object( ball );
+        auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
+        auto itrs = intersections{
+            intersection( 1.414214, floor )
+        };
+        auto state = prepare_intersection_state( itrs[0], r, itrs );
+        auto c = w->shade_hit( state );
+        
+        REQUIRE( c == f_color( 0.93642f, 0.68642f, 0.68642f ) );
+    }
 };
