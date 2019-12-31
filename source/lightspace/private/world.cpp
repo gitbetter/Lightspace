@@ -67,7 +67,17 @@ namespace ls {
         auto surface = phong_lighting( state.object, state.object->material(), _light, state.shifted_point, state.eye, state.normal, shadowed );
         auto reflected = reflected_color( state, depth );
         auto refracted = refracted_color( state, depth );
-        return surface + reflected + refracted;
+        
+        const auto& mat = state.object->material();
+        if ( mat->reflectivity > 0.f && mat->transparency > 0.f )
+        {
+            auto reflectance = schlick( state );
+            return surface + reflected * reflectance + refracted * ( 1.f - reflectance );
+        }
+        else
+        {
+            return surface + reflected + refracted;
+        }
     }
 
     f_color world::reflected_color( const intersection_state& state, uint8_t depth ) {

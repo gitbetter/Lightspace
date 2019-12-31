@@ -73,6 +73,7 @@ namespace ls {
 
     using intersections = std::vector<intersection>;
 
-    intersection_state prepare_intersection_state( const intersection& i, const ray& r, const intersections& itrs = intersections() );
+    intersection_state prepare_intersection_state( const intersection& i, const ray& r, const intersections& itrs = intersections() );    
+
     intersection hit( const intersections& itrs );
 }

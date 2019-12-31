@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "tensor.hpp"
 #include "materials.hpp"
+#include "intersection.hpp"
 
 namespace ls {
     class light
@@ -62,4 +63,6 @@ namespace ls {
     };
 
     f_color phong_lighting( const shape_ptr obj, const phong_material_ptr& mat, const light_ptr& l, const f_point& position, const f_vector& eye, const f_vector& normal, bool in_shadow = false );
+
+    fpnum schlick( const intersection_state& state );
 }

@@ -134,4 +134,20 @@ namespace ls {
     };
 
     intersections intersect( const plane_ptr& p, const ray& r );
+
+    class cube : public shape
+    {
+    public:
+
+        cube() : shape()
+        { }
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
+        
+        static std::array<fpnum, 2> check_axis( fpnum origin, fpnum direction );
+
+        PTR_FACTORY( cube )
+    };
+
+    intersections intersect( const cube_ptr& c, const ray& r );
 }

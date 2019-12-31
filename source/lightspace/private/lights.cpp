@@ -33,4 +33,23 @@ namespace ls {
 
         return ambient + diffuse + specular;
     }
+
+    fpnum schlick( const intersection_state& state )
+    {
+        auto cos_t = state.eye.dot( state.normal );
+        
+        if ( state.ridx_from > state.ridx_to )
+        {
+            auto ratio = state.ridx_from / state.ridx_to;
+            auto sin2_t = ( ratio * ratio ) * ( 1.f - cos_t * cos_t );
+            if ( sin2_t > 1.f )
+            {
+                return 1.f;
+            }
+            cos_t = sqrt( 1.f - sin2_t );
+        }
+        
+        auto r0 = pow( ( state.ridx_from - state.ridx_to ) / ( state.ridx_from + state.ridx_to ), 2 );
+        return r0 + ( 1.f - r0 ) * pow( 1.f - cos_t, 5 );
+    }
 }

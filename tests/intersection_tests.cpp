@@ -2,6 +2,7 @@
 #include "shapes.hpp"
 #include "intersection.hpp"
 #include "transform.hpp"
+#include "lights.hpp"
 
 using namespace ls;
 
@@ -154,5 +155,46 @@ TEST_CASE( "Intersection processing", "[intersections]" )
         
         REQUIRE( state.shifted_under_point.z > epsilon / 2 );
         REQUIRE( state.point.z < state.shifted_under_point.z );
+    }
+    
+    SECTION( "The Shlick approximation under total internal reflection" )
+    {
+        auto sh = sphere::create_glassy();
+        auto r = ray( f_point( 0, 0, 0.7071067f ), f_vector( 0, 1, 0 ) );
+        auto itrs = intersections{
+            intersection( -0.7071067f, sh ),
+            intersection( 0.7071067f, sh ),
+        };
+        auto state = prepare_intersection_state( itrs[1], r, itrs );
+        auto reflectance = schlick( state );
+        
+        REQUIRE( reflectance == 1.f );
+    }
+    
+    SECTION( "The Shlick approximation with a perpendicular viewing angle" )
+    {
+        auto sh = sphere::create_glassy();
+        auto r = ray( f_point( 0, 0, 0 ), f_vector( 0, 1, 0 ) );
+        auto itrs = intersections{
+            intersection( -1, sh ),
+            intersection( 1, sh ),
+        };
+        auto state = prepare_intersection_state( itrs[1], r, itrs );
+        auto reflectance = schlick( state );
+        
+        REQUIRE( approx( reflectance, 0.04f ) );
+    }
+    
+    SECTION( "The Shlick approximation with a small angle and ridx_to > ridx_from" )
+    {
+        auto sh = sphere::create_glassy();
+        auto r = ray( f_point( 0, 0.99f, -2 ), f_vector( 0, 0, 1 ) );
+        auto itrs = intersections{
+            intersection( 1.8589f, sh )
+        };
+        auto state = prepare_intersection_state( itrs[0], r, itrs );
+        auto reflectance = schlick( state );
+        
+        REQUIRE( approx( reflectance, 0.48873f ) );
     }
 };

@@ -335,4 +335,28 @@ TEST_CASE( "World processing", "[world]" )
         
         REQUIRE( c == f_color( 0.93642f, 0.68642f, 0.68642f ) );
     }
+    
+    SECTION( "shade_hit with a reflective, transparent material" )
+    {
+        auto w = world::create_default();
+        auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
+        auto floor = plane::create();
+        floor->set_transform( transform::translation( 0.f, -1.f, 0.f ) );
+        floor->material()->reflectivity = 0.5f;
+        floor->material()->transparency = 0.5f;
+        floor->material()->refractive_index = 1.5f;
+        w->add_object( floor );
+        auto ball = sphere::create();
+        ball->material()->surface_pattern = solid_pattern::create( f_color( 1, 0, 0 ) );
+        ball->material()->ambient = 0.5f;
+        ball->set_transform( transform::translation( 0.f, -3.5f, -0.5f ) );
+        w->add_object( ball );
+        auto itrs = intersections{
+            intersection( 1.414214, floor )
+        };
+        auto state = prepare_intersection_state( itrs[0], r, itrs );
+        auto c = w->shade_hit( state );
+        
+        REQUIRE( c == f_color( 0.93391f, 0.69643f, 0.69243f ) );
+    }
 };
