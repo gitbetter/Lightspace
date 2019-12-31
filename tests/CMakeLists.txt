@@ -10,6 +10,7 @@ ${TESTS_DIR}/ray_tests.cpp
 ${TESTS_DIR}/sphere_tests.cpp
 ${TESTS_DIR}/plane_tests.cpp
 ${TESTS_DIR}/cube_tests.cpp
+${TESTS_DIR}/cylinder_tests.cpp
 ${TESTS_DIR}/intersection_tests.cpp
 ${TESTS_DIR}/light_tests.cpp
 ${TESTS_DIR}/material_tests.cpp

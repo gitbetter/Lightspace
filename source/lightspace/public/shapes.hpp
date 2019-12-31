@@ -6,7 +6,7 @@
 #include "intersection.hpp"
 
 namespace ls {
-    class shape
+    class shape : public std::enable_shared_from_this<shape>
     {
     public:
 
@@ -150,4 +150,64 @@ namespace ls {
     };
 
     intersections intersect( const cube_ptr& c, const ray& r );
+
+    class cylinder : public shape
+    {
+    public:
+
+        cylinder() :
+            shape(), min_extent_( -infinity ), max_extent_( infinity ), closed_( false )
+        { }
+        
+        cylinder( fpnum min, fpnum max ) :
+            shape(), min_extent_( min ), max_extent_( max ), closed_( false )
+        { }
+        
+        fpnum min_extent() const noexcept
+        {
+            return min_extent_;
+        }
+        
+        void set_min_extent( fpnum extent ) noexcept
+        {
+            min_extent_ = extent;
+        }
+        
+        fpnum max_extent() const noexcept
+        {
+            return max_extent_;
+        }
+        
+        void set_max_extent( fpnum extent ) noexcept
+        {
+            max_extent_ = extent;
+        }
+        
+        bool closed() const noexcept
+        {
+            return closed_;
+        }
+        
+        void set_closed( bool closed ) noexcept
+        {
+            closed_ = closed;
+        }
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
+        
+        static bool check_cap( const ray& r, fpnum t ) noexcept;
+        
+        static void intersect_caps( const cylinder_ptr& cyl, const ray& r, intersections& itrs );
+
+        PTR_FACTORY( cylinder )
+        
+    private:
+        
+        fpnum min_extent_;
+        fpnum max_extent_;
+        bool closed_;
+        
+    };
+
+    intersections intersect( const cylinder_ptr& cyl, const ray& r );
 }

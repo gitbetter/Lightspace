@@ -39,6 +39,7 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( sphere );
     DECLARE_SHARED_PTR_TYPE( plane );
     DECLARE_SHARED_PTR_TYPE( cube );
+    DECLARE_SHARED_PTR_TYPE( cylinder );
     DECLARE_SHARED_PTR_TYPE( world );
     DECLARE_SHARED_PTR_TYPE( light );
     DECLARE_SHARED_PTR_TYPE( point_light );
