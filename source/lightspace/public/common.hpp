@@ -17,6 +17,9 @@ using fpnum = float;
     class type;\
     using type##_ptr = std::shared_ptr<type>;
 
+#define DECLARE_WEAK_PTR_TYPE(type) \
+    using type##_ptr_weak = std::weak_ptr<type>;
+
 #define PTR_FACTORY(type)\
 template<typename... Ts>\
 static type##_ptr create( Ts&&... args ) noexcept\
@@ -40,6 +43,8 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( plane );
     DECLARE_SHARED_PTR_TYPE( cube );
     DECLARE_SHARED_PTR_TYPE( cylinder );
+    DECLARE_SHARED_PTR_TYPE( cone );
+    DECLARE_SHARED_PTR_TYPE( group );
     DECLARE_SHARED_PTR_TYPE( world );
     DECLARE_SHARED_PTR_TYPE( light );
     DECLARE_SHARED_PTR_TYPE( point_light );
@@ -53,6 +58,8 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( gradient_pattern );
     DECLARE_SHARED_PTR_TYPE( ring_pattern );
     DECLARE_SHARED_PTR_TYPE( checker_pattern );
+
+    DECLARE_WEAK_PTR_TYPE( group );
 
     template<
         typename T,

@@ -328,7 +328,7 @@ TEST_CASE( "World processing", "[world]" )
         w->add_object( ball );
         auto r = ray( f_point( 0, 0, -3 ), f_vector( 0, -0.7071067f, 0.7071067f ) );
         auto itrs = intersections{
-            intersection( 1.414214, floor )
+            intersection( 1.414214f, floor )
         };
         auto state = prepare_intersection_state( itrs[0], r, itrs );
         auto c = w->shade_hit( state );
@@ -352,7 +352,7 @@ TEST_CASE( "World processing", "[world]" )
         ball->set_transform( transform::translation( 0.f, -3.5f, -0.5f ) );
         w->add_object( ball );
         auto itrs = intersections{
-            intersection( 1.414214, floor )
+            intersection( 1.414214f, floor )
         };
         auto state = prepare_intersection_state( itrs[0], r, itrs );
         auto c = w->shade_hit( state );

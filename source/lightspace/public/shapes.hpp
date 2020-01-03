@@ -43,6 +43,21 @@ namespace ls {
             _mat = mat;
         }
 
+        group_ptr parent() const noexcept
+        {
+            if ( !_parent.expired() )
+            {
+                return _parent.lock();
+            }
+            return nullptr;
+        }
+
+        void set_parent( const group_ptr& p ) noexcept
+        {
+            _parent.reset();
+            _parent = group_ptr_weak( p );
+        }
+
         virtual f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept
         {
             return f_vector( 0, 0, 0 );
@@ -66,6 +81,7 @@ namespace ls {
         f_point _origin;
         f4_matrix _transform;
         phong_material_ptr _mat;
+        group_ptr_weak _parent;
 
     };
 
@@ -210,4 +226,94 @@ namespace ls {
     };
 
     intersections intersect( const cylinder_ptr& cyl, const ray& r );
+
+    class cone : public shape
+    {
+    public:
+
+        cone() :
+            shape(), min_extent_( -infinity ), max_extent_( infinity ), closed_( false )
+        { }
+
+        cone( fpnum min, fpnum max ) :
+            shape(), min_extent_( min ), max_extent_( max ), closed_( false )
+        { }
+
+        fpnum min_extent() const noexcept
+        {
+            return min_extent_;
+        }
+
+        void set_min_extent( fpnum extent ) noexcept
+        {
+            min_extent_ = extent;
+        }
+
+        fpnum max_extent() const noexcept
+        {
+            return max_extent_;
+        }
+
+        void set_max_extent( fpnum extent ) noexcept
+        {
+            max_extent_ = extent;
+        }
+
+        bool closed() const noexcept
+        {
+            return closed_;
+        }
+
+        void set_closed( bool closed ) noexcept
+        {
+            closed_ = closed;
+        }
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
+
+        static bool check_cap( const ray& r, fpnum radius, fpnum t ) noexcept;
+
+        static void intersect_caps( const cone_ptr& cyl, const ray& r, intersections& itrs );
+
+        PTR_FACTORY( cone )
+
+    private:
+
+        fpnum min_extent_;
+        fpnum max_extent_;
+        bool closed_;
+
+    };
+
+    intersections intersect( const cone_ptr& cyl, const ray& r );
+
+    class group : public shape
+    {
+    public:
+
+        using children_list = std::vector<shape_ptr>;
+
+        group() :
+            shape()
+        { }
+
+        const children_list& children() const noexcept
+        {
+            return children_;
+        }
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
+        {
+            return f_vector( 0, 0, 0 );
+        }
+
+        void add_child( const shape_ptr shape ) noexcept;
+
+        PTR_FACTORY( group )
+
+    private:
+
+        children_list children_;
+
+    };
 }

@@ -67,7 +67,8 @@ namespace ls
 
         const tensor<T> normalized() const
         {
-            T lenInv = 1 / length();
+            T l = length();
+            T lenInv = !approx( l, 0.f ) ? 1 / length() : 0.f;
             return tensor<T>( x * lenInv, y * lenInv, z * lenInv, w * lenInv );
         }
 

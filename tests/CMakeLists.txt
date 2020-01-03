@@ -11,10 +11,12 @@ ${TESTS_DIR}/sphere_tests.cpp
 ${TESTS_DIR}/plane_tests.cpp
 ${TESTS_DIR}/cube_tests.cpp
 ${TESTS_DIR}/cylinder_tests.cpp
+${TESTS_DIR}/cone_tests.cpp
 ${TESTS_DIR}/intersection_tests.cpp
 ${TESTS_DIR}/light_tests.cpp
 ${TESTS_DIR}/material_tests.cpp
 ${TESTS_DIR}/world_tests.cpp
 ${TESTS_DIR}/camera_tests.cpp
 ${TESTS_DIR}/pattern_tests.cpp
+${TESTS_DIR}/group_tests.cpp
 )
