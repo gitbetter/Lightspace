@@ -4,7 +4,7 @@
 namespace ls {
     f_color pattern::color_at( const shape_ptr obj, const f_point& point ) const
     {
-        auto obj_point = obj->transform().inverse() * point;
+        auto obj_point = obj->world_to_object( point );
         auto patt_point = transform_.inverse() * obj_point;
         return color_at( patt_point );
     }

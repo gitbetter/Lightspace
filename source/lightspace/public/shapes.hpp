@@ -58,10 +58,11 @@ namespace ls {
             _parent = group_ptr_weak( p );
         }
 
-        virtual f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept
-        {
-            return f_vector( 0, 0, 0 );
-        }
+        f_point world_to_object( const f_point& p ) const noexcept;
+
+        f_vector normal_to_world( const f_vector& n ) const noexcept;
+
+        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept;
 
         virtual bool identical_to( const shape_ptr other ) const noexcept
         {
@@ -83,6 +84,13 @@ namespace ls {
         phong_material_ptr _mat;
         group_ptr_weak _parent;
 
+    protected:
+
+        virtual f_vector local_normal( const f_point& p ) const
+        {
+            return f_vector( 0, 0, 0 );
+        }
+
     };
 
     intersections intersect( const shape_ptr& s, const ray& r );
@@ -103,14 +111,6 @@ namespace ls {
             return _radius;
         }
 
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
-        {
-            auto os_point = _transform.inverse() * f_point( x, y, z );
-            auto os_normal = os_point - f_point( 0, 0, 0 );
-            auto ws_normal = _transform.inverse().transpose() * os_normal;
-            return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
-        }
-
         bool identical_to( const shape_ptr other ) const noexcept override
         {
             auto other_sphere = std::dynamic_pointer_cast<sphere>( other );
@@ -129,6 +129,13 @@ namespace ls {
 
         fpnum _radius;
 
+    private:
+
+        f_vector local_normal( const f_point& p ) const override
+        {
+            return p - f_point( 0, 0, 0 );
+        }
+
     };
 
     intersections intersect( const sphere_ptr& s, const ray& r );
@@ -140,13 +147,15 @@ namespace ls {
         plane() : shape()
         { }
 
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
+        PTR_FACTORY( plane )
+
+    private:
+
+        f_vector local_normal( const f_point& p ) const override
         {
-            auto ws_normal = _transform.inverse().transpose() * f_vector( 0, 1, 0 );
-            return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+            return f_vector( 0, 1, 0 );
         }
 
-        PTR_FACTORY( plane )
     };
 
     intersections intersect( const plane_ptr& p, const ray& r );
@@ -157,12 +166,15 @@ namespace ls {
 
         cube() : shape()
         { }
-
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
         
         static std::array<fpnum, 2> check_axis( fpnum origin, fpnum direction );
 
         PTR_FACTORY( cube )
+
+    private:
+
+        f_vector local_normal( const f_point& p ) const override;
+
     };
 
     intersections intersect( const cube_ptr& c, const ray& r );
@@ -208,8 +220,6 @@ namespace ls {
         {
             closed_ = closed;
         }
-
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
         
         static bool check_cap( const ray& r, fpnum t ) noexcept;
         
@@ -222,6 +232,10 @@ namespace ls {
         fpnum min_extent_;
         fpnum max_extent_;
         bool closed_;
+
+    private:
+
+        f_vector local_normal( const f_point& p ) const override;
         
     };
 
@@ -269,8 +283,6 @@ namespace ls {
             closed_ = closed;
         }
 
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override;
-
         static bool check_cap( const ray& r, fpnum radius, fpnum t ) noexcept;
 
         static void intersect_caps( const cone_ptr& cyl, const ray& r, intersections& itrs );
@@ -282,6 +294,10 @@ namespace ls {
         fpnum min_extent_;
         fpnum max_extent_;
         bool closed_;
+
+    private:
+
+        f_vector local_normal( const f_point& p ) const override;
 
     };
 
@@ -302,11 +318,6 @@ namespace ls {
             return children_;
         }
 
-        f_vector normal( fpnum x, fpnum y, fpnum z ) const noexcept override
-        {
-            return f_vector( 0, 0, 0 );
-        }
-
         void add_child( const shape_ptr shape ) noexcept;
 
         PTR_FACTORY( group )
@@ -315,5 +326,14 @@ namespace ls {
 
         children_list children_;
 
+    private:
+
+        f_vector local_normal( const f_point& p ) const override
+        {
+            throw method_not_supported();
+        }
+
     };
+
+    intersections intersect( const group_ptr& grp, const ray& r );
 }

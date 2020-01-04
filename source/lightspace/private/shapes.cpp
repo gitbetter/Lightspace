@@ -1,6 +1,35 @@
 #include "shapes.hpp"
 
 namespace ls {
+    f_point shape::world_to_object( const f_point& p ) const noexcept
+    {
+        auto pnt = p;
+        if ( !_parent.expired() )
+        {
+            pnt = _parent.lock()->world_to_object( pnt );
+        }
+        return _transform.inverse() * pnt;
+    }
+
+    f_vector shape::normal_to_world( const f_vector& n ) const noexcept
+    {
+        auto norm = _transform.inverse().transpose() * n;
+        norm.w = 0.f;
+        norm = norm.normalized();
+        if ( !_parent.expired() )
+        {
+            norm = _parent.lock()->normal_to_world( norm );
+        }
+        return norm;
+    }
+
+    f_vector shape::normal( fpnum x, fpnum y, fpnum z ) const noexcept
+    {
+        auto local_point = world_to_object( f_point( x, y, z ) );
+        auto local_norm = local_normal( local_point );
+        return normal_to_world( local_norm );
+    }
+
     intersections intersect( const shape_ptr& s, const ray& r )
     {
         auto sph = std::dynamic_pointer_cast<sphere>( s );
@@ -19,6 +48,24 @@ namespace ls {
         if ( cb )
         {
             return intersect( cb, r );
+        }
+
+        auto cyl = std::dynamic_pointer_cast<cylinder>( s );
+        if ( cyl )
+        {
+            return intersect( cyl, r );
+        }
+
+        auto cn = std::dynamic_pointer_cast<cone>( s );
+        if ( cn )
+        {
+            return intersect( cn, r );
+        }
+
+        auto grp = std::dynamic_pointer_cast<group>( s );
+        if ( grp )
+        {
+            return intersect( grp, r );
         }
 
         return intersections();
@@ -76,21 +123,18 @@ namespace ls {
         };
     }
 
-    f_vector cube::normal( fpnum x, fpnum y, fpnum z ) const noexcept
+    f_vector cube::local_normal( const f_point& p ) const
     {
-        auto maxc = std::max( std::max( std::abs( x ), std::abs( y ) ), std::abs( z ) );
-        if ( approx( maxc, std::abs( x ) ) )
+        auto maxc = std::max( std::max( std::abs( p.x ), std::abs( p.y ) ), std::abs( p.z ) );
+        if ( approx( maxc, std::abs( p.x ) ) )
         {
-            auto n = _transform.inverse().transpose() * f_vector( x, 0, 0 );
-            return n.normalized();
+            return f_vector( p.x, 0, 0 );
         }
-        else if ( approx( maxc, std::abs( y ) ) )
+        else if ( approx( maxc, std::abs( p.y ) ) )
         {
-            auto n = _transform.inverse().transpose() * f_vector( 0, y, 0 );
-            return n.normalized();
+            return f_vector( 0, p.y, 0 );
         }
-        auto n = _transform.inverse().transpose() * f_vector( 0, 0, z );
-        return n.normalized();
+        return f_vector( 0, 0, p.z );
     }
 
     std::array<fpnum, 2> cube::check_axis( fpnum origin, fpnum direction )
@@ -139,24 +183,18 @@ namespace ls {
         }
     }
 
-    f_vector cylinder::normal( fpnum x, fpnum y, fpnum z ) const noexcept
+    f_vector cylinder::local_normal( const f_point& p ) const
     {
-        f_vector norm( 0, 0, 0 );
-        auto dist = x * x + z * z;
-        if ( dist < 1 && y >= max_extent_ - epsilon )
+        auto dist = p.x * p.x + p.z * p.z;
+        if ( dist < 1 && p.y >= max_extent_ - epsilon )
         {
-            norm = f_vector( 0, 1, 0 );
+            return f_vector( 0, 1, 0 );
         }
-        else if ( dist < 1 && y <= min_extent_ + epsilon )
+        if ( dist < 1 && p.y <= min_extent_ + epsilon )
         {
-            norm = f_vector( 0, -1, 0 );
+            return f_vector( 0, -1, 0 );
         }
-        else
-        {
-            norm = f_vector( x, 0, z );
-        }
-        auto ws_normal = _transform.inverse().transpose() * norm;
-        return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+        return f_vector( p.x, 0, p.z );
     }
 
     bool cylinder::check_cap( const ray& r, fpnum t ) noexcept
@@ -241,29 +279,23 @@ namespace ls {
         return itrs;
     }
 
-    f_vector cone::normal( fpnum x, fpnum y, fpnum z ) const noexcept
+    f_vector cone::local_normal( const f_point& p ) const
     {
-        f_vector norm( 0, 0, 0 );
-        auto dist = x * x + z * z;
-        if ( dist < 1 && y >= max_extent_ - epsilon )
+        auto dist = p.x * p.x + p.z * p.z;
+        if ( dist < 1 && p.y >= max_extent_ - epsilon )
         {
-            norm = f_vector( 0, 1, 0 );
+            return f_vector( 0, 1, 0 );
         }
-        else if ( dist < 1 && y <= min_extent_ + epsilon )
+        if ( dist < 1 && p.y <= min_extent_ + epsilon )
         {
-            norm = f_vector( 0, -1, 0 );
+            return f_vector( 0, -1, 0 );
         }
-        else
+        auto newY = std::sqrt( p.x * p.x + p.z * p.z );
+        if ( p.y > 0 && !approx( p.y, 0.f ) )
         {
-            auto newY = std::sqrt( x * x + z * z );
-            if ( y > 0 && !approx( y, 0.f ) )
-            {
-                newY *= -1;
-            }
-            norm = f_vector( x, newY, z );
+            newY *= -1;
         }
-        auto ws_normal = _transform.inverse().transpose() * norm;
-        return f_vector( ws_normal.x, ws_normal.y, ws_normal.z ).normalized();
+        return f_vector( p.x, newY, p.z );
     }
 
     bool cone::check_cap( const ray& r, fpnum radius, fpnum t ) noexcept
@@ -363,5 +395,21 @@ namespace ls {
             children_.push_back( shape );
         }
         shape->set_parent( std::static_pointer_cast<group>( shared_from_this() ) );
+    }
+
+    intersections intersect( const group_ptr& grp, const ray& r )
+    {
+        const ray transformed_ray = grp->transform().inverse() * r;
+
+        intersections itrs;
+        for ( auto child : grp->children() )
+        {
+            auto child_itrs = intersect( child, transformed_ray );
+            itrs.insert( itrs.end(), child_itrs.begin(), child_itrs.end() );
+        }
+        std::sort( itrs.begin(), itrs.end(), [] ( intersection i1, intersection i2 ) {
+            return i1.time() < i2.time();
+        } );
+        return itrs;
     }
 }
