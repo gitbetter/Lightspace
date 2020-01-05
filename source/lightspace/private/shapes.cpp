@@ -137,38 +137,37 @@ namespace ls {
         return f_vector( 0, 0, p.z );
     }
 
-    std::array<fpnum, 2> cube::check_axis( fpnum origin, fpnum direction )
-    {
-        auto tmin_numerator = -1.f - origin;
-        auto tmax_numerator = 1.f - origin;
-
-        fpnum tmin, tmax;
-        if ( abs( direction ) >= epsilon )
-        {
-            tmin = tmin_numerator / direction;
-            tmax = tmax_numerator / direction;
-        }
-        else
-        {
-            tmin = tmin_numerator * infinity;
-            tmax = tmax_numerator * infinity;
-        }
-
-        return tmin > tmax ? std::array<fpnum, 2>{tmax, tmin} : std::array<fpnum, 2>{tmin, tmax};
-    }
-
     intersections intersect( const cube_ptr& c, const ray& r )
     {
         const ray transformed_ray = c->transform().inverse() * r;
 
+        auto check_axis = [] ( fpnum origin, fpnum direction ) {
+            auto tmin_numerator = -1.f - origin;
+            auto tmax_numerator = 1.f - origin;
+
+            fpnum tmin, tmax;
+            if ( abs( direction ) >= epsilon )
+            {
+                tmin = tmin_numerator / direction;
+                tmax = tmax_numerator / direction;
+            }
+            else
+            {
+                tmin = tmin_numerator * infinity;
+                tmax = tmax_numerator * infinity;
+            }
+
+            return tmin > tmax ? std::array<fpnum, 2>{tmax, tmin} : std::array<fpnum, 2>{tmin, tmax};
+        };
+
         auto origin = r.origin();
         auto direction = r.direction();
-        auto xt = cube::check_axis( origin.x, direction.x );
-        auto yt = cube::check_axis( origin.y, direction.y );
-        auto zt = cube::check_axis( origin.z, direction.z );
+        auto xt = check_axis( origin.x, direction.x );
+        auto yt = check_axis( origin.y, direction.y );
+        auto zt = check_axis( origin.z, direction.z );
 
-        auto tmin = std::max( std::max( xt[0], yt[0] ), zt[0] );
-        auto tmax = std::min( std::min( xt[1], yt[1] ), zt[1] );
+        auto tmin = std::max( { xt[0], yt[0], zt[0] } );
+        auto tmax = std::min( { xt[1], yt[1], zt[1] } );
 
         if ( tmin > tmax )
         {
@@ -397,19 +396,55 @@ namespace ls {
         shape->set_parent( std::static_pointer_cast<group>( shared_from_this() ) );
     }
 
+    aabb_bounds group::bounds() const noexcept
+    {
+        aabb_bounds group_bounds( f_point( infinity, infinity, infinity ), f_point( -infinity, -infinity, -infinity ) );
+        for ( auto child : children_ )
+        {
+            auto child_bounds = child->transform() * child->bounds();
+            group_bounds.min.x = std::min( child_bounds.min.x, group_bounds.min.x );
+            group_bounds.min.y = std::min( child_bounds.min.y, group_bounds.min.y );
+            group_bounds.min.z = std::min( child_bounds.min.z, group_bounds.min.z );
+            group_bounds.max.x = std::max( child_bounds.max.x, group_bounds.max.x );
+            group_bounds.max.y = std::max( child_bounds.max.y, group_bounds.max.y );
+            group_bounds.max.z = std::max( child_bounds.max.z, group_bounds.max.z );
+        }
+
+        f_point blb = _transform * f_point( group_bounds.min.x, group_bounds.min.y, group_bounds.min.z );
+        f_point blf = _transform * f_point( group_bounds.min.x, group_bounds.min.y, group_bounds.max.z );
+        f_point tlb = _transform * f_point( group_bounds.min.x, group_bounds.max.y, group_bounds.min.z );
+        f_point tlf = _transform * f_point( group_bounds.min.x, group_bounds.max.y, group_bounds.max.z );
+        f_point brb = _transform * f_point( group_bounds.max.x, group_bounds.min.y, group_bounds.min.z );
+        f_point brf = _transform * f_point( group_bounds.max.x, group_bounds.min.y, group_bounds.max.z );
+        f_point trb = _transform * f_point( group_bounds.max.x, group_bounds.max.y, group_bounds.min.z );
+        f_point trf = _transform * f_point( group_bounds.max.x, group_bounds.max.y, group_bounds.max.z );
+
+        group_bounds.min.x = std::min( { blb.x, blf.x, tlb.x, tlf.x, brb.x, brf.x, trb.x, trf.x } );
+        group_bounds.min.y = std::min( { blb.y, blf.y, tlb.y, tlf.y, brb.y, brf.y, trb.y, trf.y } );
+        group_bounds.min.z = std::min( { blb.z, blf.z, tlb.z, tlf.z, brb.z, brf.z, trb.z, trf.z } );
+        group_bounds.max.x = std::max( { blb.x, blf.x, tlb.x, tlf.x, brb.x, brf.x, trb.x, trf.x } );
+        group_bounds.max.y = std::max( { blb.y, blf.y, tlb.y, tlf.y, brb.y, brf.y, trb.y, trf.y } );
+        group_bounds.max.z = std::max( { blb.z, blf.z, tlb.z, tlf.z, brb.z, brf.z, trb.z, trf.z } );
+
+        return group_bounds;
+    }
+
     intersections intersect( const group_ptr& grp, const ray& r )
     {
         const ray transformed_ray = grp->transform().inverse() * r;
 
         intersections itrs;
-        for ( auto child : grp->children() )
+        if ( grp->bounds().intersects( r ) )
         {
-            auto child_itrs = intersect( child, transformed_ray );
-            itrs.insert( itrs.end(), child_itrs.begin(), child_itrs.end() );
+            for ( auto child : grp->children() )
+            {
+                auto child_itrs = intersect( child, transformed_ray );
+                itrs.insert( itrs.end(), child_itrs.begin(), child_itrs.end() );
+            }
+            std::sort( itrs.begin(), itrs.end(), [] ( intersection i1, intersection i2 ) {
+                return i1.time() < i2.time();
+            } );
         }
-        std::sort( itrs.begin(), itrs.end(), [] ( intersection i1, intersection i2 ) {
-            return i1.time() < i2.time();
-        } );
         return itrs;
     }
 }

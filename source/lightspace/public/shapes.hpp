@@ -69,6 +69,11 @@ namespace ls {
             return other && _origin == other->_origin && _transform == other->_transform && *_mat == *( other->_mat );
         }
 
+        virtual aabb_bounds bounds() const noexcept
+        {
+            return aabb_bounds( f_point( 0, 0, 0 ), f_point( 0, 0, 0 ) );
+        }
+
         bool operator==( const shape& rhs ) const noexcept
         {
             return _id == rhs._id;
@@ -120,6 +125,11 @@ namespace ls {
             }
             return _radius == other_sphere->_radius && shape::identical_to( other );
         }
+
+        aabb_bounds bounds() const noexcept override
+        {
+            return aabb_bounds( f_point( -_radius, -_radius, -_radius ), f_point( _radius, _radius, _radius ) );
+        }
         
         static sphere_ptr create_glassy();
 
@@ -147,6 +157,11 @@ namespace ls {
         plane() : shape()
         { }
 
+        aabb_bounds bounds() const noexcept override
+        {
+            return aabb_bounds( f_point( -infinity, 0, -infinity ), f_point( infinity, 0, infinity ) );
+        }
+
         PTR_FACTORY( plane )
 
     private:
@@ -166,8 +181,11 @@ namespace ls {
 
         cube() : shape()
         { }
-        
-        static std::array<fpnum, 2> check_axis( fpnum origin, fpnum direction );
+
+        aabb_bounds bounds() const noexcept override
+        {
+            return aabb_bounds( f_point( -1, -1, -1 ), f_point( 1, 1, 1 ) );
+        }
 
         PTR_FACTORY( cube )
 
@@ -219,6 +237,11 @@ namespace ls {
         void set_closed( bool closed ) noexcept
         {
             closed_ = closed;
+        }
+
+        aabb_bounds bounds() const noexcept override
+        {
+            return aabb_bounds( f_point( -1, min_extent_, -1 ), f_point( 1, max_extent_, 1 ) );
         }
         
         static bool check_cap( const ray& r, fpnum t ) noexcept;
@@ -283,6 +306,11 @@ namespace ls {
             closed_ = closed;
         }
 
+        aabb_bounds bounds() const noexcept override
+        {
+            return aabb_bounds( f_point( -1, min_extent_, -1 ), f_point( 1, max_extent_, 1 ) );
+        }
+
         static bool check_cap( const ray& r, fpnum radius, fpnum t ) noexcept;
 
         static void intersect_caps( const cone_ptr& cyl, const ray& r, intersections& itrs );
@@ -319,6 +347,8 @@ namespace ls {
         }
 
         void add_child( const shape_ptr shape ) noexcept;
+
+        aabb_bounds bounds() const noexcept override;
 
         PTR_FACTORY( group )
 

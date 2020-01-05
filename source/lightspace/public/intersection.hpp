@@ -76,4 +76,25 @@ namespace ls {
     intersection_state prepare_intersection_state( const intersection& i, const ray& r, const intersections& itrs = intersections() );    
 
     intersection hit( const intersections& itrs );
+
+    struct aabb_bounds
+    {
+        f_point max;
+        f_point min;
+
+        aabb_bounds() :
+            max( f_point( 0, 0, 0 ) ), min( f_point( 0, 0, 0 ) )
+        { }
+
+        aabb_bounds( const f_point& min, const f_point& max ) :
+            min( min ), max( max )
+        { }
+
+        bool intersects( const ray& r );
+    };
+
+    inline const aabb_bounds operator*( const f4_matrix& mat, const aabb_bounds& b ) noexcept
+    {
+        return aabb_bounds( mat * b.min, mat * b.max );
+    }
 }

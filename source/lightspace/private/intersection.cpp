@@ -67,4 +67,37 @@ namespace ls {
         while ( it != itrs_sorted.cend() && it->time() < 0 ) ++it;
         return it == itrs_sorted.cend() ? intersection::none : *it;
     }
+
+    bool aabb_bounds::intersects( const ray& r )
+    {
+        auto check_axis = [] ( fpnum origin, fpnum direction, fpnum min, fpnum max ) {
+            auto tmin_numerator = min - origin;
+            auto tmax_numerator = max - origin;
+
+            fpnum tmin, tmax;
+            if ( abs( direction ) >= epsilon )
+            {
+                tmin = tmin_numerator / direction;
+                tmax = tmax_numerator / direction;
+            }
+            else
+            {
+                tmin = tmin_numerator * infinity;
+                tmax = tmax_numerator * infinity;
+            }
+
+            return tmin > tmax ? std::array<fpnum, 2>{tmax, tmin} : std::array<fpnum, 2>{tmin, tmax};
+        };
+
+        auto origin = r.origin();
+        auto direction = r.direction();
+        auto xt = check_axis( origin.x, direction.x, min.x, max.x );
+        auto yt = check_axis( origin.y, direction.y, min.y, max.y );
+        auto zt = check_axis( origin.z, direction.z, min.z, max.z );
+
+        auto tmin = std::max( { xt[0], yt[0], zt[0] } );
+        auto tmax = std::min( { xt[1], yt[1], zt[1] } );
+
+        return tmin <= tmax;
+    }
 }
