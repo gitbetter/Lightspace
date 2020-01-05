@@ -192,6 +192,48 @@ void run_simple_scene_sample( uint16_t x_res, uint16_t y_res )
     canv.write_to( "simple_scene_render.ppm" );
 }
 
+void run_hexagon_scene_sample( uint16_t x_res, uint16_t y_res )
+{
+    auto hexagon_side = [] () {
+        auto corner = ls::sphere::create();
+        corner->set_transform( ls::transform::translation( 0.f, 0.f, -1.f ) * 
+                               ls::transform::scale( 0.25f, 0.25f, 0.25f ) );
+        auto edge = ls::cylinder::create();
+        edge->set_max_extent( 1.f );
+        edge->set_min_extent( 0.f );
+        edge->set_transform( ls::transform::translation( 0.f, 0.f, -1.f ) *
+                             ls::transform::rotation_y( -ls::pi_over_6 ) *
+                             ls::transform::rotation_z( -ls::pi_over_2 ) *
+                             ls::transform::scale( 0.25f, 1.f, 0.25f ) );
+        auto side = ls::group::create();
+        side->add_child( corner );
+        side->add_child( edge );
+        return side;
+    };
+
+    auto hexagon = ls::group::create();
+    for ( int i = 0; i < 6; i++ )
+    {
+        auto side = hexagon_side();
+        side->set_transform( ls::transform::rotation_y( i * ls::pi_over_3 ) );
+        hexagon->add_child( side );
+    }
+
+    auto light = ls::point_light::create( ls::f_color( 1, 1, 1 ), ls::f_point( -10, 10, -7 ) );
+
+    auto w = ls::world::create();
+
+    w->add_object( hexagon );
+    w->set_light( light );
+
+    auto cam = ls::camera::create( x_res, y_res, ls::pi_over_3 );
+    cam->set_transform( ls::transform::view( ls::f_point( 0, 1.5f, -5 ), ls::f_point( 0, 1, 0 ), ls::f_vector( 0, 1, 0 ) ) );
+
+    auto canv = cam->render( w );
+
+    canv.write_to( "hexagon_scene_render.ppm" );
+}
+
 
 int main( int argc, char* argv[] )
 {
@@ -211,7 +253,10 @@ int main( int argc, char* argv[] )
     // run_simple_sphere_sample( canvas_width, canvas_height );
 
     // 4. Draws a scene by adding additional walls and spheres to the world.
-    run_simple_scene_sample( canvas_width, canvas_height );
+    // run_simple_scene_sample( canvas_width, canvas_height );
+
+    // 5. Draws a scene with a hexagon made from grouped cylinders and spheres
+    run_hexagon_scene_sample( canvas_width, canvas_height );
 
     return 0;
 }
