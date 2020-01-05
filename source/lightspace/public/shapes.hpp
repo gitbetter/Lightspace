@@ -331,6 +331,82 @@ namespace ls {
 
     intersections intersect( const cone_ptr& cyl, const ray& r );
 
+    class triangle : public shape
+    {
+    public:
+
+        using shape::normal;
+
+        triangle( const f_point& p1, const f_point& p2, const f_point& p3 ) :
+            shape(), p1_( p1 ), p2_( p2 ), p3_( p3 )
+        { 
+            precompute_edges();
+            precompute_normal();
+        }
+
+        f_point p1() const noexcept
+        {
+            return p1_;
+        }
+
+        f_point p2() const noexcept
+        {
+            return p2_;
+        }
+
+        f_point p3() const noexcept
+        {
+            return p3_;
+        }
+
+        f_vector e1() const noexcept
+        {
+            return e1_;
+        }
+
+        f_vector e2() const noexcept
+        {
+            return e2_;
+        }
+
+        f_vector normal() const noexcept
+        {
+            return normal_;
+        }
+
+        void precompute_edges() noexcept
+        {
+            e1_ = p2_ - p1_;
+            e2_ = p3_ - p1_;
+        }
+
+        void precompute_normal() noexcept
+        {
+            normal_ = e2_.cross( e1_ ).normalized();
+        }
+
+        PTR_FACTORY( triangle )
+
+    private:
+
+        f_point p1_;
+        f_point p2_;
+        f_point p3_;
+        f_vector e1_;
+        f_vector e2_;
+        f_vector normal_;
+
+    private:
+
+        f_vector local_normal( const f_point& p ) const override
+        {
+            return normal_;
+        }
+
+    };
+
+    intersections intersect( const triangle_ptr& tr, const ray& r );
+
     class group : public shape
     {
     public:

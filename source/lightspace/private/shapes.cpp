@@ -387,6 +387,36 @@ namespace ls {
         return itrs;
     }
 
+    intersections intersect( const triangle_ptr& tr, const ray& r )
+    {
+        auto dir_cross_e2 = r.direction().cross( tr->e2() );
+        auto determinant = tr->e1().dot( dir_cross_e2 );
+        if ( std::abs( determinant ) < epsilon )
+        {
+            return intersections();
+        }
+
+        auto f = 1.f / determinant;
+        auto p1_to_origin = r.origin() - tr->p1();
+        auto u = f * p1_to_origin.dot( dir_cross_e2 );
+        if ( u < 0 || u > 1 )
+        {
+            return intersections();
+        }
+
+        auto origin_cross_e1 = p1_to_origin.cross( tr->e1() );
+        auto v = f * r.direction().dot( origin_cross_e1 );
+        if ( v < 0 || ( u + v ) > 1 )
+        {
+            return intersections();
+        }
+
+        auto t = f * tr->e2().dot( origin_cross_e1 );
+        return intersections{
+            intersection( t, tr )
+        };
+    }
+
     void group::add_child( const shape_ptr shape ) noexcept
     {
         if ( std::find( children_.begin(), children_.end(), shape ) == children_.end() )

@@ -44,6 +44,7 @@ namespace ls {
     DECLARE_SHARED_PTR_TYPE( cube );
     DECLARE_SHARED_PTR_TYPE( cylinder );
     DECLARE_SHARED_PTR_TYPE( cone );
+    DECLARE_SHARED_PTR_TYPE( triangle );
     DECLARE_SHARED_PTR_TYPE( group );
     DECLARE_SHARED_PTR_TYPE( world );
     DECLARE_SHARED_PTR_TYPE( light );

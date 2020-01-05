@@ -206,6 +206,10 @@ namespace ls
     {
     public:
 
+        vector() :
+            tensor<T>( 0, 0, 0, 1 )
+        { }
+
         vector( T x, T y, T z ) :
             tensor<T>( x, y, z, 0 )
         { }
@@ -296,6 +300,10 @@ namespace ls
     class point : public tensor<T>
     {
     public:
+
+        point() :
+            tensor<T>( 0, 0, 0, 1 )
+        { }
 
         point( T x, T y, T z ) :
             tensor<T>( x, y, z, 1 )
