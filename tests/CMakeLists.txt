@@ -20,4 +20,11 @@ ${TESTS_DIR}/world_tests.cpp
 ${TESTS_DIR}/camera_tests.cpp
 ${TESTS_DIR}/pattern_tests.cpp
 ${TESTS_DIR}/group_tests.cpp
+${TESTS_DIR}/model_parser_tests.cpp
 )
+
+configure_file(${TESTS_DIR}/test_objs/gibberish.obj gibberish.obj COPYONLY)
+configure_file(${TESTS_DIR}/test_objs/groups.obj groups.obj COPYONLY)
+configure_file(${TESTS_DIR}/test_objs/polygon.obj polygon.obj COPYONLY)
+configure_file(${TESTS_DIR}/test_objs/triangles.obj triangles.obj COPYONLY)
+configure_file(${TESTS_DIR}/test_objs/vertices.obj vertices.obj COPYONLY)

@@ -26,6 +26,8 @@ ${CORE_DIR}/public/camera.hpp
 ${CORE_DIR}/private/camera.cpp
 ${CORE_DIR}/public/patterns.hpp
 ${CORE_DIR}/private/patterns.cpp
+${CORE_DIR}/public/model_parser.hpp
+${CORE_DIR}/private/model_parser.cpp
 )
 
 set(CORE_INCLUDES

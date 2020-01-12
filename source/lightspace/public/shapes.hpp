@@ -414,12 +414,25 @@ namespace ls {
         using children_list = std::vector<shape_ptr>;
 
         group() :
-            shape()
+            shape(), name_( "Default" )
         { }
+        group( const std::string& name ) :
+            shape(), name_( name )
+        { }
+
+        const std::string& name() const noexcept
+        {
+            return name_;
+        }
 
         const children_list& children() const noexcept
         {
             return children_;
+        }
+        
+        void set_name( const std::string& name ) noexcept
+        {
+            name_ = name;
         }
 
         void add_child( const shape_ptr shape ) noexcept;
@@ -430,6 +443,7 @@ namespace ls {
 
     private:
 
+        std::string name_;
         children_list children_;
 
     private:
